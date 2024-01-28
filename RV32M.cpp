@@ -97,7 +97,7 @@ class RV32M
             int32_t data = Register[rs1].first ^ BinaryToSignedDecimal(ptr);
             WriteRegister(rd, data);
         }
-        else if(funct3 == "100") // ori
+        else if(funct3 == "110") // ori
         {
             std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
             Immediatevalue = BinaryCode.substr(0, 12);
@@ -131,7 +131,7 @@ class RV32M
                 Immediatevalue = BinaryCode.substr(7, 5);
                 ptr = (char*)Immediatevalue.c_str();
                 uint32_t shift = BinaryToDecimal(ptr);
-                int32_t data = (Register[rs1].first >> shift) | (~((~0) >> shift));
+                int32_t data = (Register[rs1].first >> shift) | (~((~0) >> shift)); // from chatgpt
                 // int32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
                 WriteRegister(rd, data);
             }
@@ -160,66 +160,140 @@ class RV32M
         
         r = BinaryCode.substr(20, 5);
         uint32_t rd = BinaryToDecimal(ptr);
-        if(funct3 == "000") // add, sub, 
+        if(funct3 == "000") // add, sub, mul
         {
-            if(BinaryCode[1] == '1')
+            if(BinaryCode[6] == '0')
             {
-                int32_t data = Register[rs1].first - Register[rs2].first;
+                if(BinaryCode[1] == '1') // add
+                {
+                    int32_t data = Register[rs1].first - Register[rs2].first;
+                    WriteRegister(rd, data);
+                }
+                else // sub
+                {
+                    int32_t data = Register[rs1].first + Register[rs2].first;
+                    WriteRegister(rd, data);
+                }
+            }
+            else // mul
+            {
+                int32_t product = static_cast<int32_t>(static_cast<int64_t>(Register[rs1].first) * static_cast<int64_t>(Register[rs2].first));
+                WriteRegister(rd, product);
+            }
+        }
+        else if(funct3 == "010") // slt, mulhsu
+        {
+            if(BinaryCode[6] == '0')
+            {
+                int32_t data = Register[rs1].first < Register[rs2].first;
                 WriteRegister(rd, data);
             }
-            else
+            else // mulhsu
             {
-                int32_t data = Register[rs1].first + Register[rs2].first;
+                uint32_t unsigned_rs2 = hexaDecimalToDecimal(Register[rs2].second);
+                int64_t product = static_cast<int64_t>(Register[rs1].first) * static_cast<uint64_t>(unsigned_rs2);
+                int32_t result = static_cast<int32_t>(product >> 32);
+                WriteRegister(rd, result);
+            }
+        }
+        else if(funct3 == "011") // sltu, mulhu
+        {
+            if(BinaryCode[6] == '0')
+            {
+                uint32_t unsigned_rs1 = hexaDecimalToDecimal(Register[rs1].second);
+                uint32_t unsigned_rs2 = hexaDecimalToDecimal(Register[rs2].second);
+                int32_t data = unsigned_rs1 < unsigned_rs2;
+                WriteRegister(rd, data);
+            }
+            else // mulhu
+            {
+                uint32_t unsigned_rs1 = hexaDecimalToDecimal(Register[rs1].second);
+                uint32_t unsigned_rs2 = hexaDecimalToDecimal(Register[rs2].second);
+                int64_t product = static_cast<uint64_t>(unsigned_rs1) * static_cast<uint64_t>(unsigned_rs2);
+                int32_t result = static_cast<int32_t>(product >> 32);
+                WriteRegister(rd, result);
+            }
+        }
+        else if(funct3 == "100") // xor, div
+        {
+            if(BinaryCode[6] == '0')
+            {
+                int32_t data = Register[rs1].first ^ Register[rs2].first;
+                WriteRegister(rd, data);
+            }
+            else // div
+            {
+                int32_t data = Register[rs1].first / Register[rs2].first;
                 WriteRegister(rd, data);
             }
         }
-        else if(funct3 == "010") //slt
+        else if(funct3 == "110") // or, rem
         {
-            int32_t data = Register[rs1].first < Register[rs2].first;
-            WriteRegister(rd, data);
+            if(BinaryCode[6] == '0')
+            {
+                int32_t data = Register[rs1].first | Register[rs2].first;
+                WriteRegister(rd, data);
+            }
+            else // rem
+            {
+                int32_t data = Register[rs1].first % Register[rs2].first;
+                WriteRegister(rd, data);
+            }
         }
-        else if(funct3 == "011") //sltu
+        else if(funct3 == "111") // and, remu
         {
-            uint32_t unsigned_rs1 = hexaDecimalToDecimal(Register[rs1].second);
-            uint32_t unsigned_rs2 = hexaDecimalToDecimal(Register[rs2].second);
-            int32_t data = unsigned_rs1 < unsigned_rs2;
-            WriteRegister(rd, data);
+            if(BinaryCode[6] == '0')
+            {
+                int32_t data = Register[rs1].first & Register[rs2].first;
+                WriteRegister(rd, data);
+            }
+            else // remu
+            {
+                uint32_t unsigned_rs1 = hexaDecimalToDecimal(Register[rs1].second);
+                uint32_t unsigned_rs2 = hexaDecimalToDecimal(Register[rs2].second);
+                int32_t data = unsigned_rs1 % unsigned_rs2;
+                WriteRegister(rd, data);
+            }
         }
-        else if(funct3 == "100") // xor
+        else if(funct3 == "001") // sll, mulh
         {
-            int32_t data = Register[rs1].first ^ Register[rs2].first;
-            WriteRegister(rd, data);
-        }
-        else if(funct3 == "100") // or
-        {
-            int32_t data = Register[rs1].first | Register[rs2].first;
-            WriteRegister(rd, data);
-        }
-        else if(funct3 == "111") // and
-        {
-            int32_t data = Register[rs1].first & Register[rs2].first;
-            WriteRegister(rd, data);
-        }
-        else if(funct3 == "001") // sll
-        {
-            int shift = Register[rs2].first & 31; // getting the lower 5 bits
-            int32_t data = Register[rs1].first << shift;
-            WriteRegister(rd, data);
-        }
-        else if(funct3 == "101") // right shift
-        {
-            if(BinaryCode[1] == '1') // sra
+            if(BinaryCode[6] == '0')
             {
                 int shift = Register[rs2].first & 31; // getting the lower 5 bits
-                int32_t data = (Register[rs1].first >> shift) | (~((~0) >> shift));
-                // int32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                int32_t data = Register[rs1].first << shift;
                 WriteRegister(rd, data);
             }
-            else // srl
+            else // mulh
             {
-                int shift = Register[rs2].first & 31; // getting the lower 5 bits
-                uint32_t data = static_cast<unsigned int>(Register[rs1].first) >> shift; // from chatgpt
-                // uint32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                int64_t product = static_cast<int64_t>(Register[rs1].first) * static_cast<int64_t>(Register[rs2].first);
+                int32_t result = static_cast<int32_t>(product >> 32);
+                WriteRegister(rd, result);
+            }
+        }
+        else if(funct3 == "101") // right shift, divu
+        {
+            if(BinaryCode[6] == '0')
+            {
+                if(BinaryCode[1] == '1') // sra
+                {
+                    int shift = Register[rs2].first & 31; // getting the lower 5 bits
+                    int32_t data = (Register[rs1].first >> shift) | (~((~0) >> shift)); // from chatgpt
+                    // int32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                    WriteRegister(rd, data);
+                }
+                else // srl
+                {
+                    int shift = Register[rs2].first & 31; // getting the lower 5 bits
+                    uint32_t data = static_cast<unsigned int>(Register[rs1].first) >> shift; // from chatgpt
+                    // uint32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                    WriteRegister(rd, data);
+                }
+            }
+            else // divu
+            {
+                uint32_t unsigned_rs1 = hexaDecimalToDecimal(Register[rs1].second);
+                uint32_t unsigned_rs2 = hexaDecimalToDecimal(Register[rs2].second);
+                int32_t data = unsigned_rs1 / unsigned_rs2;
                 WriteRegister(rd, data);
             }
         }
