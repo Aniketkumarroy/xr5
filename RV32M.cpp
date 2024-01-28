@@ -12,7 +12,7 @@ class RV32M
         uint32_t MEM_size = pow(2, 16) - 1;
         uint32_t CODE_size = pow(2, 16) - 1;
         char CODE_MEMORY_ADDRESS[9];
-        std::string instruction = "00009F97";
+        std::string instruction = "ffffffff";
         std::string BinaryCode = "11111111111111111111111111111111";
 
         // std::unordered_map<std::string, void(RV32M::*)(char*)> InstructionExecutor;
