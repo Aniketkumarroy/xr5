@@ -631,6 +631,146 @@ class RV32M
         strcpy(memory[int_addr + 3], str.substr(6, 2).c_str());
     }
 
+    std::string ReadByteFromCodeMemory(uint32_t addr)
+    {
+        if(addr > CODE_size - 4 || addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string byte;
+        byte  = code_memory[addr];
+
+        return byte;
+    }
+    
+    std::string ReadByteFromCodeMemory(char addr[9])
+    {
+        if(strlen(addr) > 8)
+        {
+            Error("the address should be 8 or less then 8 characters long");
+            return std::string("");
+        }
+        uint32_t int_addr = hexaDecimalToDecimal(addr);
+        if(int_addr > CODE_size - 4 || int_addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string byte;
+        byte  = code_memory[int_addr];
+
+        return byte;
+    }
+
+    std::string ReadWordFromCodeMemory(uint32_t addr)
+    {
+        if(addr > CODE_size - 4 || addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string word;
+        word  = code_memory[addr];
+        word += code_memory[addr + 1];
+        word += code_memory[addr + 2];
+        word += code_memory[addr + 3];
+
+        return word;
+    }
+    
+    std::string ReadWordFromCodeMemory(char addr[9])
+    {
+        if(strlen(addr) > 8)
+        {
+            Error("the address should be 8 or less then 8 characters long");
+            return std::string("");
+        }
+        uint32_t int_addr = hexaDecimalToDecimal(addr);
+        if(int_addr > CODE_size - 4 || int_addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string word;
+        word  = code_memory[int_addr];
+        word += code_memory[int_addr + 1];
+        word += code_memory[int_addr + 2];
+        word += code_memory[int_addr + 3];
+
+        return word;
+    }
+
+    std::string ReadByteFromMemory(uint32_t addr)
+    {
+        if(addr > MEM_size - 4 || addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string byte;
+        byte  = memory[addr];
+
+        return byte;
+    }
+    
+    std::string ReadByteFromMemory(char addr[9])
+    {
+        if(strlen(addr) > 8)
+        {
+            Error("the address should be 8 or less then 8 characters long");
+            return std::string("");
+        }
+        uint32_t int_addr = hexaDecimalToDecimal(addr);
+        if(int_addr > MEM_size - 4 || int_addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string byte;
+        byte  = memory[int_addr];
+
+        return byte;
+    }
+
+    std::string ReadWordFromMemory(uint32_t addr)
+    {
+        if(addr > MEM_size - 4 || addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string word;
+        word  = memory[addr];
+        word += memory[addr + 1];
+        word += memory[addr + 2];
+        word += memory[addr + 3];
+
+        return word;
+    }
+    
+    std::string ReadWordFromMemory(char addr[9])
+    {
+        if(strlen(addr) > 8)
+        {
+            Error("the address should be 8 or less then 8 characters long");
+            return std::string("");
+        }
+        uint32_t int_addr = hexaDecimalToDecimal(addr);
+        if(int_addr > MEM_size - 4 || int_addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return std::string("");
+        }
+        std::string word;
+        word  = memory[int_addr];
+        word += memory[int_addr + 1];
+        word += memory[int_addr + 2];
+        word += memory[int_addr + 3];
+
+        return word;
+    }
+
     void WriteRegister(int reg, char data[9])
     {
         if(reg > 31 || reg < 0)
