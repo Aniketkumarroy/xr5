@@ -149,7 +149,80 @@ class RV32M
     
     void RegisterArithmetic()
     {
+        std::string funct3 = BinaryCode.substr(17, 3);
+
+        std::string r = BinaryCode.substr(7, 5);
+        char *ptr = (char*)r.c_str();
+        uint32_t rs2 = BinaryToDecimal(ptr);
+
+        r = BinaryCode.substr(12, 5);
+        uint32_t rs1 = BinaryToDecimal(ptr);
         
+        r = BinaryCode.substr(20, 5);
+        uint32_t rd = BinaryToDecimal(ptr);
+        if(funct3 == "000") // add, sub, 
+        {
+            if(BinaryCode[1] == '1')
+            {
+                int32_t data = Register[rs1].first - Register[rs2].first;
+                WriteRegister(rd, data);
+            }
+            else
+            {
+                int32_t data = Register[rs1].first + Register[rs2].first;
+                WriteRegister(rd, data);
+            }
+        }
+        else if(funct3 == "010") //slt
+        {
+            int32_t data = Register[rs1].first < Register[rs2].first;
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "011") //sltu
+        {
+            uint32_t unsigned_rs1 = hexaDecimalToDecimal(Register[rs1].second);
+            uint32_t unsigned_rs2 = hexaDecimalToDecimal(Register[rs2].second);
+            int32_t data = unsigned_rs1 < unsigned_rs2;
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "100") // xor
+        {
+            int32_t data = Register[rs1].first ^ Register[rs2].first;
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "100") // or
+        {
+            int32_t data = Register[rs1].first | Register[rs2].first;
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "111") // and
+        {
+            int32_t data = Register[rs1].first & Register[rs2].first;
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "001") // sll
+        {
+            int shift = Register[rs2].first & 31; // getting the lower 5 bits
+            int32_t data = Register[rs1].first << shift;
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "101") // right shift
+        {
+            if(BinaryCode[1] == '1') // sra
+            {
+                int shift = Register[rs2].first & 31; // getting the lower 5 bits
+                int32_t data = (Register[rs1].first >> shift) | (~((~0) >> shift));
+                // int32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                WriteRegister(rd, data);
+            }
+            else // srl
+            {
+                int shift = Register[rs2].first & 31; // getting the lower 5 bits
+                uint32_t data = static_cast<unsigned int>(Register[rs1].first) >> shift; // from chatgpt
+                // uint32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                WriteRegister(rd, data);
+            }
+        }
     }
     
     void LoadFromMemory()
