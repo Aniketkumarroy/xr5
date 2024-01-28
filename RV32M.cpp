@@ -42,15 +42,12 @@ class RV32M
 
         char *ptr = (char*)value.c_str();
 
-        char hex[9], binary[33];
         int32_t data = PC.first + BinaryToSignedDecimal(ptr);
-        decimalToBinary(data, binary, 32);
-        BinarytoHexadecimal(binary, hex);
-
+        
         value = BinaryCode.substr(20, 5);
         uint32_t reg = BinaryToDecimal(ptr);
 
-        WriteRegister(reg, hex);
+        WriteRegister(reg, data);
     }
     
     void ImmediateArithmetic()
@@ -297,6 +294,23 @@ class RV32M
                 strcpy(Register[reg].second, d);
                 Register[reg].first = hexaDecimalToSignedDecimal(d, 32);
             }
+        }
+    }
+    
+    void WriteRegister(int reg, int32_t data)
+    {
+        if(reg > 31 || reg < 0)
+        {
+            Error("the provided register does not exist in RV32M");
+            return;
+        }
+        if(reg != 0)
+        {
+            Register[reg].first = data;
+            char binary[33], hex[9];
+            decimalToBinary(data, binary, 32);
+            BinarytoHexadecimal(binary, hex);
+            strcpy(Register[reg].second, hex);
         }
     }
 
