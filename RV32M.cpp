@@ -382,6 +382,64 @@ class RV32M
             strcpy(code_memory[int_addr], d);
         }
     }
+    
+    void WriteWordToCodeMemory(uint32_t addr, char data[9])
+    {
+        if(addr > CODE_size - 4 || addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return;
+        }
+        std::string str;
+        if(strlen(data) < 8)
+        {
+            char d[9];
+            d[0] = '\0';
+            int s = strlen(data);
+            while(s++ < 8)
+            strcat(d, "0");
+
+            strcat(d, data);
+            str = d;
+        }else str = data;
+
+        strcpy(code_memory[addr], str.substr(0, 2).c_str());
+        strcpy(code_memory[addr + 1], str.substr(2, 2).c_str());
+        strcpy(code_memory[addr + 2], str.substr(4, 2).c_str());
+        strcpy(code_memory[addr + 3], str.substr(6, 2).c_str());
+    }
+    
+    void WriteWordToCodeMemory(char addr[9], char data[9])
+    {
+        if(strlen(addr) > 8)
+        {
+            Error("the address should be 8 or less then 8 characters long");
+            return;
+        }
+        uint32_t int_addr = hexaDecimalToDecimal(addr);
+        if(int_addr > CODE_size - 4 || int_addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return;
+        }
+        std::string str;
+        if(strlen(data) < 8)
+        {
+            char d[9];
+            d[0] = '\0';
+            int s = strlen(data);
+            while(s++ < 8)
+            strcat(d, "0");
+
+            strcat(d, data);
+            str = d;
+        }else str = data;
+
+        strcpy(code_memory[int_addr], str.substr(0, 2).c_str());
+        strcpy(code_memory[int_addr + 1], str.substr(2, 2).c_str());
+        strcpy(code_memory[int_addr + 2], str.substr(4, 2).c_str());
+        strcpy(code_memory[int_addr + 3], str.substr(6, 2).c_str());
+    }
 
     void WriteByteToMemory(uint32_t addr, char data[3])
     {
@@ -439,6 +497,64 @@ class RV32M
             }
             strcpy(memory[int_addr], d);
         }
+    }
+
+    void WriteWordToMemory(uint32_t addr, char data[9])
+    {
+        if(addr > MEM_size - 4 || addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return;
+        }
+        std::string str;
+        if(strlen(data) < 8)
+        {
+            char d[9];
+            d[0] = '\0';
+            int s = strlen(data);
+            while(s++ < 8)
+            strcat(d, "0");
+
+            strcat(d, data);
+            str = d;
+        }else str = data;
+
+        strcpy(memory[addr], str.substr(0, 2).c_str());
+        strcpy(memory[addr + 1], str.substr(2, 2).c_str());
+        strcpy(memory[addr + 2], str.substr(4, 2).c_str());
+        strcpy(memory[addr + 3], str.substr(6, 2).c_str());
+    }
+    
+    void WriteWordToMemory(char addr[9], char data[9])
+    {
+        if(strlen(addr) > 8)
+        {
+            Error("the address should be 8 or less then 8 characters long");
+            return;
+        }
+        uint32_t int_addr = hexaDecimalToDecimal(addr);
+        if(int_addr > MEM_size - 4 || int_addr < 0)
+        {
+            Error("the provided address is out of range of code memory");
+            return;
+        }
+        std::string str;
+        if(strlen(data) < 8)
+        {
+            char d[9];
+            d[0] = '\0';
+            int s = strlen(data);
+            while(s++ < 8)
+            strcat(d, "0");
+
+            strcat(d, data);
+            str = d;
+        }else str = data;
+
+        strcpy(memory[int_addr], str.substr(0, 2).c_str());
+        strcpy(memory[int_addr + 1], str.substr(2, 2).c_str());
+        strcpy(memory[int_addr + 2], str.substr(4, 2).c_str());
+        strcpy(memory[int_addr + 3], str.substr(6, 2).c_str());
     }
 
     void WriteRegister(int reg, char data[9])
