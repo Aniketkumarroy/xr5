@@ -53,9 +53,97 @@ class RV32M
     void ImmediateArithmetic()
     {
         std::string funct3 = BinaryCode.substr(17, 3);
-        if(funct3 == "001")
+
+        std::string r = BinaryCode.substr(12, 5);
+        char *ptr = (char*)r.c_str();
+        uint32_t rs1 = BinaryToDecimal(ptr);
+
+        r = BinaryCode.substr(20, 5);
+        uint32_t rd = BinaryToDecimal(ptr);
+        if(funct3 == "000") // addi
         {
-            // std::string value = 
+            std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+            Immediatevalue = BinaryCode.substr(0, 12);
+            SignExtend(Immediatevalue, 32, true);
+            ptr = (char*)Immediatevalue.c_str();
+            int32_t data = Register[rs1].first + BinaryToSignedDecimal(ptr);
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "010") //slti
+        {
+            std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+            Immediatevalue = BinaryCode.substr(0, 12);
+            SignExtend(Immediatevalue, 32, true);
+            ptr = (char*)Immediatevalue.c_str();
+            int32_t data = Register[rs1].first < BinaryToSignedDecimal(ptr);
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "011") //sltiu
+        {
+            std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+            Immediatevalue = BinaryCode.substr(0, 12);
+            SignExtend(Immediatevalue, 32, true);
+            ptr = (char*)Immediatevalue.c_str();
+            uint32_t unsigned_rs1 = hexaDecimalToDecimal(Register[rs1].second);
+            int32_t data = unsigned_rs1 < BinaryToDecimal(ptr);
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "100") // xori
+        {
+            std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+            Immediatevalue = BinaryCode.substr(0, 12);
+            SignExtend(Immediatevalue, 32, true);
+            ptr = (char*)Immediatevalue.c_str();
+            int32_t data = Register[rs1].first ^ BinaryToSignedDecimal(ptr);
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "100") // ori
+        {
+            std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+            Immediatevalue = BinaryCode.substr(0, 12);
+            SignExtend(Immediatevalue, 32, true);
+            ptr = (char*)Immediatevalue.c_str();
+            int32_t data = Register[rs1].first | BinaryToSignedDecimal(ptr);
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "111") // andi
+        {
+            std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+            Immediatevalue = BinaryCode.substr(0, 12);
+            SignExtend(Immediatevalue, 32, true);
+            ptr = (char*)Immediatevalue.c_str();
+            int32_t data = Register[rs1].first & BinaryToSignedDecimal(ptr);
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "001") // slli
+        {
+            std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+            Immediatevalue = BinaryCode.substr(7, 5);
+            ptr = (char*)Immediatevalue.c_str();
+            int32_t data = Register[rs1].first << BinaryToDecimal(ptr);
+            WriteRegister(rd, data);
+        }
+        else if(funct3 == "101") // right shift
+        {
+            if(BinaryCode[1] == '1') // srai
+            {
+                std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+                Immediatevalue = BinaryCode.substr(7, 5);
+                ptr = (char*)Immediatevalue.c_str();
+                uint32_t shift = BinaryToDecimal(ptr);
+                int32_t data = (Register[rs1].first >> shift) | (~((~0) >> shift));
+                // int32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                WriteRegister(rd, data);
+            }
+            else // srli
+            {
+                std::string &Immediatevalue = funct3; // since funct3 is no longer in use, we will use its resources for oher purposes
+                Immediatevalue = BinaryCode.substr(7, 5);
+                ptr = (char*)Immediatevalue.c_str();
+                uint32_t data = static_cast<unsigned int>(Register[rs1].first) >> BinaryToDecimal(ptr); // from chatgpt
+                // uint32_t data = Register[rs1].first >> BinaryToDecimal(ptr);
+                WriteRegister(rd, data);
+            }
         }
     }
     
@@ -150,6 +238,18 @@ class RV32M
 
         delete(memory);
         delete(code_memory);
+    }
+
+    void SignExtend(std::string &value, int size, bool sign)
+    {
+        int s = value.size();
+        while(s++ < size)
+        {
+            if(sign)
+            value = value[0] + value;
+            else
+            value = "0" + value;
+        }
     }
 
     void WriteByteToCodeMemory(uint32_t addr, char data[3])
