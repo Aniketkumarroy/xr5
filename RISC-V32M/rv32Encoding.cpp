@@ -2,7 +2,9 @@
 #include"utilities.h"
 #include"hex.h"
 
-void U_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = nullptr){
+#include"rv32Encoding.h"
+
+void U_Encoding(char *opcode, char *code, char *binary, void (*error)(char*)){
     char *ins_1_0 = "11";
     char *ins_6_2 = opcode; // opcode
     char ins_11_7[6]; // rd
@@ -24,7 +26,7 @@ void U_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = n
     strcat(binary, ins_6_2);
     strcat(binary, ins_1_0);
 }
-void I_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = nullptr){
+void I_Encoding(char *opcode, char *code, char *binary, void (*error)(char*)){
     char *ins_1_0 = "11";
     char *ins_6_2 = opcode; // opcode
     char ins_11_7[6]; // rd
@@ -59,7 +61,7 @@ void I_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = n
     strcat(binary, ins_6_2);
     strcat(binary, ins_1_0);
 }
-void R_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = nullptr){
+void R_Encoding(char *opcode, char *code, char *binary, void (*error)(char*)){
     char *ins_1_0 = "11";
     char *ins_6_2 = opcode; // opcode
     char ins_11_7[6]; // rd
@@ -97,7 +99,7 @@ void R_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = n
     strcat(binary, ins_6_2);
     strcat(binary, ins_1_0);
 }
-void S_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = nullptr){
+void S_Encoding(char *opcode, char *code, char *binary, void (*error)(char*)){
     char *ins_1_0 = "11";
     char *ins_6_2 = opcode; // opcode
     char ins_11_7[6]; // offset[4:0]
@@ -138,7 +140,7 @@ void S_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = n
     strcat(binary, ins_6_2);
     strcat(binary, ins_1_0);
 }
-void J_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = nullptr){
+void J_Encoding(char *opcode, char *code, char *binary, void (*error)(char*)){
     char *ins_1_0 = "11";
     char *ins_6_2 = opcode; // opcode
     char ins_11_7[6]; // rd
@@ -171,7 +173,7 @@ void J_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = n
     strcat(binary, ins_6_2);
     strcat(binary, ins_1_0);
 }
-void B_Encoding(char *opcode, char *code, char *binary, void (*error)(char*) = nullptr){
+void B_Encoding(char *opcode, char *code, char *binary, void (*error)(char*)){
     char *ins_1_0 = "11";
     char *ins_6_2 = opcode; // opcode
     char ins_11_7[6]; // offset[4:1|11]

@@ -2,33 +2,37 @@
 #include<iostream>
 #include<math.h>
 #include<string.h>
-#include"RV32M.cpp"
+#include"RV32M.h"
 using namespace std;
 
 int main(int argc, char **argv) {
     RV32M rv;
-    
-    // printf("%s", rv.memory[0]);
-    // printf("%s\n", rv.code_memory[0]);
-    // rv.InstructionFetch();
-    // rv.InstructionDecode();
-    // rv.WriteRegister(21, "f");
-    // printf("%s\n", rv.Register[21].second);
-    // printf("%d\n", rv.Register[21].first);
-    // rv.InstructionDecode();
-    // rv.InstructionExecute();
-    // printf("%d\n", BinaryToDecimal("10000000"));
 
-    // std::string s = "110110101";
-    // int si = s.size();
-    // while(si++<32)
-    // s = s[0] + s;
+    uint32_t addr = 0;
+    rv.WriteWordToCodeMemory(addr, "300093");
+    rv.WriteWordToCodeMemory(addr+4, "fff00113");
+    rv.WriteWordToCodeMemory(addr+8, "401151b3");
 
-    // std::cout<<s;
+    addr = 0;
 
+    std::cout<<rv.ReadWordFromCodeMemory(addr)<<"\n";
+    std::cout<<rv.ReadWordFromCodeMemory(addr + 4)<<"\n";
+    std::cout<<rv.ReadWordFromCodeMemory(addr + 8)<<"\n";
+
+    rv.InstructionFetch();
     rv.InstructionDecode();
     rv.InstructionExecute();
-    std::cout<<rv.Register[31].first;
+    
+    rv.InstructionFetch();
+    rv.InstructionDecode();
+    rv.InstructionExecute();
+    
+    rv.InstructionFetch();
+    rv.InstructionDecode();
+    rv.InstructionExecute();
+
+    for(int i = 0; i< 32; i++)
+    printf("r%d: %s, %d\n", i, rv.Register[i].second, rv.Register[i].first);
 
     return 0;
 }

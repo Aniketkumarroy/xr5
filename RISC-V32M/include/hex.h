@@ -1,8 +1,6 @@
 #ifndef HEX
 #define HEX
-#include<string.h>
 #include<cstdint>
-#include<math.h>
 
 void hexDigitAdder(char a, char b, char c, char *s, char *carry);
 void HexadecimalAdder(char *A, char *B, char *S);

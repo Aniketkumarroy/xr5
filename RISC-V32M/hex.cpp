@@ -4,6 +4,8 @@
 #include<math.h>
 #include<stdlib.h>
 
+#include"hex.h"
+
 void hexDigitAdder(char a, char b, char c, char *s, char *carry){
     int a_int, b_int, c_int, s_int, carry_int;
     if('0' <= a && a <= '9')
@@ -101,7 +103,7 @@ int isdecimal(char *c){
     }
     return 1;
 }
-void hexDigitToBinary(char hexDigit, char *binary, void (*error)(char*) = nullptr) {
+void hexDigitToBinary(char hexDigit, char *binary, void (*error)(char*)) {
     switch (hexDigit) {
         case '0': strcpy(binary, "0000"); break;
         case '1': strcpy(binary, "0001"); break;
@@ -158,7 +160,7 @@ void HexadecimalToBinary(char *hex, char binaryString[], unsigned short size){
         hex++;
     }
 }
-void decimalToBinary(int decimalNumber, char binaryString[], unsigned short size, void (*error)(char*) = nullptr) {
+void decimalToBinary(int decimalNumber, char binaryString[], unsigned short size, void (*error)(char*)) {
     if (binaryString == nullptr && error != nullptr) error("NO binary no. is provided\n");
 
     // Use bitwise operations to convert decimal to binary
@@ -267,7 +269,7 @@ uint32_t BinaryToDecimal(char *binary){
 
     return value;
 }
-void ValueInterpreter(char *value, char binaryString[], unsigned short size, void (*error)(char*) = nullptr){
+void ValueInterpreter(char *value, char binaryString[], unsigned short size, void (*error)(char*)){
         if(*value == '\0' && error != nullptr) error("empty value provided\n");
 
     if(strlen(value) > 2 && value[0] == '0' && value[1] == 'x'){

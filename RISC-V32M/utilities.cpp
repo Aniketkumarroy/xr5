@@ -2,6 +2,7 @@
 #include<ctype.h>
 #include<stdlib.h>
 #include"hex.h"
+#include"utilities.h"
 
 char *COMMENT = ";";
 
@@ -42,7 +43,7 @@ void Preprocess(char **line){
     }
     (*line)[i] = '\0';
 }
-void RegisterCode(char* r, char *binary, void (*error)(char*) = nullptr){
+void RegisterCode(char* r, char *binary, void (*error)(char*)){
     if(!isdecimal(r+1) && error != nullptr) error("Invalid Register\n");
     if((atoi(r+1) > 31 || atoi(r+1) < 0) && error != nullptr){
         error("Register does not exist in RV32M\n");

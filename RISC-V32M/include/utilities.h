@@ -1,6 +1,5 @@
 #ifndef	UTIL
 #define UTIL
-#include<string.h>
 
 void RemoveSpaces(char **line);
 void RemoveComments(char *line, char *comment);
