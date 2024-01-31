@@ -15,7 +15,7 @@ class RV32M
         std::string instruction = "ffffffff";
         std::string BinaryCode = "11111111111111111111111111111111";
         void (RV32M::*Executor)() = nullptr;
-        void (*ErrorHandler)(char*);
+        void (*ErrorHandler)(std::string);
 
     void LoadUpperImmediate();
     void AddUpperImmediateToPC();
@@ -31,9 +31,9 @@ class RV32M
         std::pair<uint32_t, char[9]> PC;
         char **memory, **code_memory;
 
-    RV32M(uint32_t memory_size = 65536, uint32_t code_memory_size = 65536, void (*error)(char*) = nullptr);
+    RV32M(uint32_t memory_size = 65536, uint32_t code_memory_size = 65536, void (*error)(std::string) = nullptr);
     ~RV32M();
-    void Error(char *msg);
+    void Error(std::string msg);
     void Reset(uint32_t memory_size = 65536, uint32_t code_memory_size = 65536) ;
     void SignExtend(std::string &value, int size, bool sign);
     void WriteByteToCodeMemory(uint32_t addr, char data[3]);

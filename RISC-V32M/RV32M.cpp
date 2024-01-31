@@ -5,7 +5,6 @@
 #include<string>
 #include<string.h>
 #include"hex.h"
-#include"utilities.h"
 
 #include"RV32M.h"
 
@@ -347,7 +346,7 @@ void RV32M::ConditionalBranch()
     
 }
 
-void RV32M::Error(char *msg)
+void RV32M::Error(std::string msg)
 {
     if(RV32M::ErrorHandler != nullptr)
     RV32M::ErrorHandler(msg);
@@ -386,7 +385,7 @@ void RV32M::Reset(uint32_t memory_size, uint32_t code_memory_size)
     }
 }
 
-RV32M::RV32M(uint32_t memory_size, uint32_t code_memory_size, void (*error)(char*))
+RV32M::RV32M(uint32_t memory_size, uint32_t code_memory_size, void (*error)(std::string))
 {
     RV32M::ErrorHandler = error;
     Reset(memory_size, code_memory_size);
