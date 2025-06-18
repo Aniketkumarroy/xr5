@@ -3,6 +3,10 @@
 namespace xr5 {
 namespace utils {
 
+/**
+ * @brief minimalistic class to propagate time passage as tick
+ *
+ */
 class ClockTick {
 
 public:

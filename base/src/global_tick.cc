@@ -13,10 +13,10 @@ std::shared_ptr<xr5::utils::ClockTick> GlobalTick::getInstance() {
 }
 
 void GlobalTick::init(xr5::utils::types::Tick c) {
-  struct timer_shared : public xr5::utils::ClockTick {
-    timer_shared(xr5::utils::types::Tick tick) : xr5::utils::ClockTick(tick) {}
+  struct clock_shared : public xr5::utils::ClockTick {
+    clock_shared(xr5::utils::types::Tick tick) : xr5::utils::ClockTick(tick) {}
   };
-  clock_ = std::make_shared<timer_shared>(c);
+  clock_ = std::make_shared<clock_shared>(c);
 }
 
 } // namespace clock

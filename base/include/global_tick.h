@@ -7,6 +7,10 @@
 namespace xr5 {
 namespace clock {
 
+  /**
+   * @brief singleton class to propagate global time as tick
+   *
+   */
 class GlobalTick {
 public:
   GlobalTick() = delete;
