@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.20)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+cmake_minimum_required(VERSION 3.11)
+project(xr5 VERSION 1.0 LANGUAGES CXX)
 
-project(riscv32 VERSION 1.0)
+include(${CMAKE_SOURCE_DIR}/common.cmake)
 
-add_subdirectory(RISC-V32M)
+add_subdirectory(utils)
+add_subdirectory(base)
 
-add_executable(riscv32 main.cpp)
-target_link_libraries(riscv32 PUBLIC RISC-V32M)
+set(LIBS xr5_utils xr5_base)
+
+add_executable(xr5 main.cpp)
+target_link_libraries(xr5 PRIVATE ${LIBS})
