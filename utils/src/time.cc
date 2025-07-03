@@ -1,7 +1,7 @@
 #include "utils/time.h"
 
 namespace xr5 {
-namespace utils {
+namespace time {
 
 void Time::setEpoch() {
   tUnit t = getTime();
@@ -19,5 +19,5 @@ tUnit Time::getTimeSinceEpoch() {
   tUnit t = getTime();
   return t - epoch_;
 }
-} // namespace utils
+} // namespace time
 } // namespace xr5

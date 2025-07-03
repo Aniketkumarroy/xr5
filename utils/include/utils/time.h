@@ -5,9 +5,9 @@
 #include <chrono>
 
 namespace xr5 {
-namespace utils {
+namespace time {
 
-using tUnit = xr5::utils::types::TimeStamp;
+using tUnit = xr5::types::TimeStamp;
 /**
  * @brief class for measuring system time since epoch
  *

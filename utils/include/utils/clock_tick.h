@@ -1,7 +1,10 @@
+#ifndef CLOCK_TICK_H_
+#define CLOCK_TICK_H_
+
 #include "utils/types.h"
 
 namespace xr5 {
-namespace utils {
+namespace clock {
 
 /**
  * @brief minimalistic class to propagate time passage as tick
@@ -10,7 +13,7 @@ namespace utils {
 class ClockTick {
 
 public:
-  ClockTick(types::Tick c = 0) : c_(c) {}
+  ClockTick(xr5::types::Tick c = 0) : c_(c) {}
 
   types::Tick now() { return c_; }
 
@@ -20,5 +23,6 @@ private:
   types::Tick c_ = 0;
 };
 
-} // namespace utils
+} // namespace clock
 } // namespace xr5
+#endif
