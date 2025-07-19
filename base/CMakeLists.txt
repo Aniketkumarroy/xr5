@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
-project(xr5_base LANGUAGES CXX)
+
+get_filename_component(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(xr5_${PROJECT_DIR} LANGUAGES CXX)
 
 include(${CMAKE_SOURCE_DIR}/common.cmake)
 
