@@ -8,6 +8,7 @@ namespace xr5 {
 namespace time {
 
 using tUnit = xr5::types::TimeStamp;
+using sys_clock = std::chrono::high_resolution_clock;
 /**
  * @brief class for measuring system time since epoch
  *
@@ -37,6 +38,6 @@ private:
   tUnit epoch_ = 0.0;
 };
 
-} // namespace utils
+} // namespace time
 } // namespace xr5
 #endif

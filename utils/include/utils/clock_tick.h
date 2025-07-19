@@ -15,7 +15,7 @@ class ClockTick {
 public:
   ClockTick(xr5::types::Tick c = 0) : c_(c) {}
 
-  types::Tick now() { return c_; }
+  xr5::types::Tick now() { return c_; }
 
   void tick() { ++c_; }
 
