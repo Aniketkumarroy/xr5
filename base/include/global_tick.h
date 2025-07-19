@@ -8,7 +8,7 @@ namespace xr5 {
 namespace clock {
 
   /**
-   * @brief singleton class to propagate global time as tick
+   * @brief singleton class to propagate global \c time as tick
    *
    */
 class GlobalTick {
@@ -17,12 +17,12 @@ public:
   GlobalTick(const GlobalTick &) = delete;
   GlobalTick &operator=(const GlobalTick &) = delete;
 
-  static std::shared_ptr<xr5::utils::ClockTick> getInstance();
+  static std::shared_ptr<xr5::clock::ClockTick> getInstance();
 
-  static void init(xr5::utils::types::Tick c = 0);
+  static void init(xr5::types::Tick c = 0);
 
 private:
-  static std::shared_ptr<xr5::utils::ClockTick> clock_;
+  static std::shared_ptr<xr5::clock::ClockTick> clock_;
 };
 
 } // namespace clock
