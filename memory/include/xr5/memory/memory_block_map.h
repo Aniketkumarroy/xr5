@@ -1,8 +1,8 @@
 #ifndef MEMORY_BASE_H_
 #define MEMORY_BASE_H_
 
-#include "utils/data_buffer.h"
-#include "utils/types.h"
+#include "xr5/utils/data_buffer.h"
+#include "xr5/utils/types.h"
 #include <unordered_map>
 
 namespace xr5 {

@@ -1,7 +1,7 @@
 #ifndef CLOCK_TICK_H_
 #define CLOCK_TICK_H_
 
-#include "utils/types.h"
+#include "xr5/utils/types.h"
 
 namespace xr5 {
 namespace clock {

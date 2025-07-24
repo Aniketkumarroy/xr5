@@ -1,7 +1,7 @@
 #ifndef GLOBAL_CLOCK_H_
 #define GLOBAL_CLOCK_H_
 
-#include "utils/clock_tick.h"
+#include "xr5/utils/clock_tick.h"
 #include <memory>
 
 namespace xr5 {
