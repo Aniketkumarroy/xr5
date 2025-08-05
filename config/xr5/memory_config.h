@@ -1,5 +1,5 @@
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef MEMORY_CONFIG_H_
+#define MEMORY_CONFIG_H_
 #include "xr5/utils/segmented_array_memory_manager.h"
 
 namespace xr5 {

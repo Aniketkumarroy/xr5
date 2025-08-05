@@ -14,6 +14,7 @@ namespace utils {
 using ByteArray =
     xr5::utils::DataArray<xr5::types::Byte, XR5_MEMORY_MANAGER_SEGMENT_SIZE>;
 
+// @todo print addresses in hexadecimal
 class SegmentedArrayMemoryManager {
 private:
   std::unordered_map<xr5::types::Address, ByteArray> memory_;
@@ -22,6 +23,8 @@ private:
 
 public:
   bool allocateMemory(const xr5::types::Address &addr);
+
+  void removeMemory(const xr5::types::Address &addr);
 
   SegmentedArrayMemoryManager(const xr5::types::Address &base_addr, size_t size)
       : base_addr_(base_addr), size_(size) {}
