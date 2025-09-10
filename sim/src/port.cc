@@ -4,21 +4,44 @@ namespace xr5 {
 namespace sim {
 
 void Port::bindSink(Port *sink) {
+  if (std::find(sinks_.begin(), sinks_.end(), sink) == sinks_.end()) {
+    // sink is already added
+    return;
+  }
   sinks_.emplace_back(sink);
   sink->bindSource(this);
 }
 
 void Port::unbindSink(Port *sink) {
-  sinks_.erase(std::remove(sinks_.begin(), sinks_.end(), sink), sinks_.end());
+  auto it = std::find(sinks_.begin(), sinks_.end(), sink);
+  if (it == sinks_.end())
+    return;
+  sinks_.erase(it);
   sink->unbindSource(this);
 }
 
-void Port::send(const Packet *packet) {
-  /** DISCUSS: for runtime speed, avoiding branch misprediction we are directly
-   * calling \c receive without checking sink(sink != nullptr). its the
-   * responsibility of the user to bind the port and check sink before using it
-   */
-  peer_->receive(packet);
+void Port::bindSource(Port *source) {
+  if (std::find(sources_.begin(), sources_.end(), source) == sources_.end()) {
+    // source is already added
+    return;
+  }
+  sources_.emplace_back(source);
+  source->bindSink(this);
+}
+
+void Port::unbindSource(Port *source) {
+  auto it = std::find(sources_.begin(), sources_.end(), source);
+  if (it == sources_.end())
+    return;
+  sources_.erase(it);
+  source->unbindSink(this);
+}
+
+void Port::unbindAll() {
+  for (const auto sink : sinks_)
+    sink->unbindSource(this);
+  for (const auto source : sources_)
+    source->unbindSink(this);
 }
 
 } // namespace sim

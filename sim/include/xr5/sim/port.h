@@ -2,6 +2,7 @@
 #define PORT_H_
 
 #include "xr5/utils/types.h"
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
@@ -59,10 +60,10 @@ public:
    */
   Port(const std::string &name, Id id) : name_(name), id_(id) {}
   Port() = delete;
-  virtual ~Port() { unbindAllSource(); };
+  virtual ~Port() { unbindAll(); };
 
   /**
-   * @brief binds the port with its peer
+   * @brief binds the port with its sink
    *
    * NOTE: we are using raw pointers and not smart pointers because Ports life
    * will be managed by their creators and we don't want to have a ownership
@@ -77,7 +78,8 @@ public:
 
   void bindSource(Port *source);
   void unbindSource(Port *source);
-  void unbindAllSource();
+
+  void unbindAll();
 
   /**
    * @brief receives the pointer to the data
@@ -98,15 +100,27 @@ public:
    */
   virtual void receive(const Packet *packet) = 0;
   /**
-   * @brief send a packet to its peer by calling \c peer_->receive
+   * @brief send a packet to every sink in \c sinks_ by calling \c sink->receive
    *
    * @param[in] packet packet to send
    */
-  void send(const Packet *packet);
+  inline void send(const Packet *packet) {
+    for (const auto sink : sinks_)
+      sink->receive(packet);
+  }
 
   const std::string &getName() { return name_; }
 
 private:
+  /**
+   * DISCUSS: although it will be a good practice to use std::unordered_set over
+   * vector to avoid duplication, fast removal and find operation, we stick to
+   * vector because this find, removal, addition will only be done in
+   * initialization or stop step of the system. we will bear this small startup
+   * or stop cost to get, in runtime, benefit of better cache locality of
+   * vectors in looping through them
+   *
+   */
   std::vector<Port *> sinks_;
   std::vector<Port *> sources_;
   std::string name_;
