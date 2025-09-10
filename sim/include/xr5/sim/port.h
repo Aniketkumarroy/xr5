@@ -112,16 +112,22 @@ public:
   const std::string &getName() { return name_; }
 
 private:
-  /**
-   * DISCUSS: although it will be a good practice to use std::unordered_set over
-   * vector to avoid duplication, fast removal and find operation, we stick to
-   * vector because this find, removal, addition will only be done in
+  /** DISCUSS: although it will be a good practice to use std::unordered_set
+   * over vector to avoid duplication, fast removal and find operation, we stick
+   * to vector because this find, removal, addition will only be done in
    * initialization or stop step of the system. we will bear this small startup
    * or stop cost to get, in runtime, benefit of better cache locality of
    * vectors in looping through them
-   *
    */
   std::vector<Port *> sinks_;
+  /** DISCUSS: producer ports don't wait for callbacks from their source,
+   * instead its the duty of a producer port to broadcast packet to every of its
+   * sinks, so just maintaining a vector of sinks is enough. but still we are
+   * maintaining a vector of sources too because, if a sink goes out of scope,
+   * or want's to disconnect, it must erase its presense in each of its sources'
+   * sinks vector so that the any source will not broadcast packet to this sink
+   *
+   */
   std::vector<Port *> sources_;
   std::string name_;
   Id id_ = -1;
