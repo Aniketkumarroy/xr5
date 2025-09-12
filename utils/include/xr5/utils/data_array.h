@@ -7,10 +7,10 @@ namespace xr5 {
 namespace utils {
 
 template <typename Type, size_t Size> class DataArray {
-  using DataType = Type;
-  static constexpr size_t size = Size;
 
 public:
+  using DataType = Type;
+  static constexpr size_t size = Size;
   DataArray() = default;
   ~DataArray() = default;
 
