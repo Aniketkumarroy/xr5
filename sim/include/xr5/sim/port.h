@@ -105,6 +105,8 @@ public:
    * @param[in] packet packet to send
    */
   inline void send(const Packet *packet) {
+    /** DISCUSS: can we parallelize this loop
+     */
     for (const auto sink : sinks_)
       sink->receive(packet);
   }
@@ -126,7 +128,6 @@ private:
    * maintaining a vector of sources too because, if a sink goes out of scope,
    * or want's to disconnect, it must erase its presense in each of its sources'
    * sinks vector so that the any source will not broadcast packet to this sink
-   *
    */
   std::vector<Port *> sources_;
   std::string name_;
