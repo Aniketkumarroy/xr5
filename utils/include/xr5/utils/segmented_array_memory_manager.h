@@ -14,12 +14,9 @@ namespace utils {
 using ByteArray =
     xr5::utils::DataArray<xr5::types::Byte, XR5_MEMORY_MANAGER_SEGMENT_SIZE>;
 
-// @todo print addresses in hexadecimal
+/** TODO: print addresses in hexadecimal
+ */
 template <typename DataArray = ByteArray> class SegmentedArrayMemoryManager {
-private:
-  std::unordered_map<xr5::types::Address, DataArray> memory_;
-  xr5::types::Address base_addr_;
-  size_t size_;
 
 public:
   SegmentedArrayMemoryManager(const xr5::types::Address &base_addr, size_t size)
@@ -103,6 +100,11 @@ public:
   bool isValid(const xr5::types::Address &addr) {
     return (base_addr_ <= addr) && (addr <= (base_addr_ + size_));
   }
+
+private:
+  std::unordered_map<xr5::types::Address, DataArray> memory_;
+  xr5::types::Address base_addr_;
+  size_t size_;
 };
 } // namespace utils
 
