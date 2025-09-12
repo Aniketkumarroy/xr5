@@ -29,8 +29,9 @@ endif()
 
 add_subdirectory(utils)
 add_subdirectory(memory)
+add_subdirectory(sim)
 
-set(LIBS xr5_utils xr5_memory)
+set(LIBS xr5_utils xr5_memory xr5_sim)
 
 add_executable(xr5 main.cpp)
 target_link_libraries(xr5 PRIVATE ${LIBS})

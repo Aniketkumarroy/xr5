@@ -1,7 +1,7 @@
-#include "global_tick.h"
+#include "xr5/sim/event_queue.h"
 using namespace std;
 
-int main(int argc, char **argv) {
+int main() {
   // RV32M rv;
 
   // uint32_t addr = 0;
@@ -30,7 +30,9 @@ int main(int argc, char **argv) {
   // for(int i = 0; i< 32; i++)
   // printf("r%d: %s, %d\n", i, rv.Register[i].second, rv.Register[i].first);
 
-  auto clock = xr5::clock::GlobalTick::getInstance();
+  // auto clock = xr5::clock::GlobalTick::getInstance();
 
+  // xr5::sim::Event::Ptr e = xr5::sim::Event::makePtr(
+  //     xr5::types::Tick(2), xr5::sim::Event::DefaultPriority);
   return 0;
 }
