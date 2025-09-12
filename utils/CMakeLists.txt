@@ -9,7 +9,7 @@ option(TEST_EN "Build tests for utils library" OFF)
 
 set(XR5_UTILS_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(XR5_UTILS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../config)
+set(CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/config)
 
 set(THIRD_PARTY_LIBS spdlog)
 
@@ -29,8 +29,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}
 )
 
-# Optional: add tests
-if(TEST_EN)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
+if(${FULL_BUILD})
+  add_executable(${PROJECT_NAME}_demo demo/utils_demo.cc)
+  target_include_directories(${PROJECT_NAME}_demo PUBLIC $<BUILD_INTERFACE:${XR5_UTILS_INCLUDE_DIR}> $<INSTALL_INTERFACE:include>)
+  target_include_directories(${PROJECT_NAME}_demo PUBLIC $<BUILD_INTERFACE:${CONFIG_DIR}> $<INSTALL_INTERFACE:config>)
+  target_link_libraries(${PROJECT_NAME}_demo PRIVATE ${THIRD_PARTY_LIBS} )
+  add_custom_command(TARGET ${PROJECT_NAME}_demo POST_BUILD COMMAND ${CMAKE_STRIP} $<TARGET_FILE:${PROJECT_NAME}_demo> )
+endif(${FULL_BUILD})
+

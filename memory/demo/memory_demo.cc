@@ -1,4 +1,4 @@
-#include "xr5/memory/memory_block_map.h"
+#include "xr5/memory/dram.h"
 #include <iostream>
 
 int main() {
