@@ -4,25 +4,31 @@
 #include "xr5/utils/types.h"
 
 namespace xr5 {
-namespace clock {
+namespace utils {
 
 /**
  * @brief minimalistic class to propagate time passage as tick
+ *
+ * NOTE: currently here one tick corresponds to 1 picosecond
+ * TODO: we can templatize the class to have one tick to any of
+ * \c xr5::types::Time::Unit
  *
  */
 class ClockTick {
 
 public:
-  ClockTick(xr5::types::Tick c = 0) : c_(c) {}
+  ClockTick(xr5::types::Tick c = 0) : t_(xr5::types::Time::PicoSec(c)) {}
 
-  xr5::types::Tick now() { return c_; }
+  xr5::types::Tick now() { return t_.picosec(); }
 
-  void tick() { ++c_; }
+  const xr5::types::Time &getTime() { return t_; }
+
+  void tick() { ++t_; }
 
 private:
-  types::Tick c_ = 0;
+  xr5::types::Time t_;
 };
 
-} // namespace clock
+} // namespace utils
 } // namespace xr5
 #endif
