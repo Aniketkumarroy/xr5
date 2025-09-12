@@ -1,6 +1,7 @@
 #ifndef NUMBERS_H_
 #define NUMBERS_H_
 #include <cstdint>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 namespace xr5 {
@@ -62,6 +63,24 @@ hexToDecimal(const std::string &hex) {
  */
 template <typename T> T hexToDecimal(const char *hex) {
   return hexToDecimal<T>(std::string(hex));
+}
+
+/** TODO: refactor it
+ */
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, void>::type
+decimalToHex(const T dec, std::string &hex) {
+  std::stringstream ss;
+
+  // Handle signed integers separately to print them in two's complement
+  if constexpr (std::is_signed<T>::value) {
+    using UnsignedT = typename std::make_unsigned<T>::type;
+    ss << std::hex << std::uppercase << static_cast<UnsignedT>(dec);
+  } else {
+    ss << std::hex << std::uppercase << dec;
+  }
+
+  hex = ss.str();
 }
 
 } // namespace utils
