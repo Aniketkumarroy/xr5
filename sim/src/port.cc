@@ -3,6 +3,8 @@
 namespace xr5 {
 namespace sim {
 
+Port::Id Port::num_of_ports_minus_one_ = Port::kInvalidId;
+
 void Port::bindSink(Port *sink) {
   if (std::find(sinks_.begin(), sinks_.end(), sink) == sinks_.end()) {
     // sink is already added

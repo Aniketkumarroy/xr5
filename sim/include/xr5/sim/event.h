@@ -18,9 +18,11 @@ public:
    */
   using Ptr = std::unique_ptr<Event>;
   using Priority = int8_t;
-  static const Priority DefaultPriority = Priority(0);
-  static const Priority MinimumPriority = std::numeric_limits<Priority>::min();
-  static const Priority MaximumPriority = std::numeric_limits<Priority>::max();
+  static constexpr Priority kDefaultPriority = Priority(0);
+  static constexpr Priority kMinimumPriority =
+      std::numeric_limits<Priority>::min();
+  static constexpr Priority kMaximumPriority =
+      std::numeric_limits<Priority>::max();
 
   /** TODO: make a factory method to return Ptr
    */
@@ -80,11 +82,11 @@ private:
 template <typename T> class MemberFuncEvent : public Event {
 public:
   MemberFuncEvent(T *obj, void (T::*method)(), const xr5::types::Tick when,
-                  const Event::Priority priority = Event::DefaultPriority)
+                  const Event::Priority priority = Event::kDefaultPriority)
       : Event(when, priority), obj_(obj), method_(method) {}
 
   MemberFuncEvent(T &obj, void (T::*method)(), const xr5::types::Tick when,
-                  const Event::Priority priority = Event::DefaultPriority)
+                  const Event::Priority priority = Event::kDefaultPriority)
       : Event(when, priority), obj_(&obj), method_(method) {}
 
   ~MemberFuncEvent() = default;
@@ -104,13 +106,13 @@ class EventCallback {
 public:
   template <typename T>
   EventCallback(T *obj, void (T::*method)(), xr5::types::Tick when,
-                Event::Priority priority = Event::DefaultPriority)
+                Event::Priority priority = Event::kDefaultPriority)
       : ptr_event_(xr5::utils::make_ptr<Event, MemberFuncEvent<T>>(
             obj, method, when, priority)) {}
 
   template <typename T>
   EventCallback(T &obj, void (T::*method)(), xr5::types::Tick when,
-                Event::Priority priority = Event::DefaultPriority)
+                Event::Priority priority = Event::kDefaultPriority)
       : ptr_event_(xr5::utils::make_ptr<Event, MemberFuncEvent<T>>(
             obj, method, when, priority)) {}
 

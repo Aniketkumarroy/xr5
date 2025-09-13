@@ -26,7 +26,7 @@ public:
   }
 
   virtual Port *getPort(const std::string &name,
-                        Port::Id idx = Port::InvalidId);
+                        Port::Id idx = Port::kInvalidId);
 
 private:
   EventQueue::Ptr ptr_event_queue_;

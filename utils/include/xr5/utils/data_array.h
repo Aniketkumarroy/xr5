@@ -10,7 +10,7 @@ template <typename Type, size_t Size> class DataArray {
 
 public:
   using DataType = Type;
-  static constexpr size_t size = Size;
+  static constexpr size_t ksize = Size;
   DataArray() = default;
   ~DataArray() = default;
 

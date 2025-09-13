@@ -53,12 +53,14 @@ class Port {
 public:
   using Id = int16_t;
   using Ptr = std::unique_ptr<Port>;
-  const static Id InvalidId = int16_t(-1);
+  static constexpr Id kInvalidId = int16_t(-1);
 
   /** DISCUSS: should we steal the resource of the caller(name_ =
    * std::move(name))
    */
-  Port(const std::string &name, Id id) : name_(name), id_(id) {}
+  Port(const std::string &name, Id id) : name_(name), id_(id) {
+    ++num_of_ports_minus_one_;
+  }
   Port() = delete;
   virtual ~Port() { unbindAll(); };
 
@@ -113,6 +115,10 @@ public:
 
   const std::string &getName() { return name_; }
 
+  const Id getId() { return id_; }
+
+  static Id getNewId() { return num_of_ports_minus_one_; }
+
 private:
   /** DISCUSS: although it will be a good practice to use std::unordered_set
    * over vector to avoid duplication, fast removal and find operation, we stick
@@ -132,6 +138,7 @@ private:
   std::vector<Port *> sources_;
   std::string name_;
   Id id_ = -1;
+  static Id num_of_ports_minus_one_;
 };
 
 } // namespace sim

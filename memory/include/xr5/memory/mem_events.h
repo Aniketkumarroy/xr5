@@ -11,7 +11,7 @@ public:
   MemCpyEvent() = delete;
   MemCpyEvent(SimObject *obj, const xr5::types::Tick when,
               const xr5::sim::Event::Priority priority =
-                  xr5::sim::Event::DefaultPriority)
+                  xr5::sim::Event::kDefaultPriority)
       : Event(when, priority), mem_obj_(obj) {}
   ~MemCpyEvent() = default;
 
@@ -23,7 +23,7 @@ private:
 
 inline void scheduleMemCpyEvent(SimObject *sim_obj, const xr5::types::Tick when,
                                 const xr5::sim::Event::Priority priority =
-                                    xr5::sim::Event::DefaultPriority) {
+                                    xr5::sim::Event::kDefaultPriority) {
   Event::Ptr e =
       xr5::utils::make_ptr<Event, MemCpyEvent>(sim_obj, when, priority);
   sim_obj->schedule(std::move(e));
