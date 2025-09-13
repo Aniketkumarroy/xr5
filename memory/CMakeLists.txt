@@ -47,3 +47,7 @@ install(TARGETS ${PROJECT_NAME}
 install(DIRECTORY ${XR5_MEMORY_INCLUDE_DIR}/
     DESTINATION include
 )
+
+install(DIRECTORY ${CONFIG_DIR}/
+    DESTINATION include
+)
