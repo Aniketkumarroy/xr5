@@ -1,13 +1,20 @@
 #ifndef MEMORY_BASE_H_
 #define MEMORY_BASE_H_
+#include "xr5/memory_config.h"
 #include "xr5/sim/port.h"
+#include "xr5/utils/segmented_array_memory_manager.h"
 #include "xr5/utils/utils.h"
 
 namespace xr5 {
 namespace memory {
+
+template <typename Data,
+          template <typename> class MemoryManager = DefaultMemoryManager>
 class MemoryBase {
 public:
-  MemoryBase() = default;
+  MemoryBase(const xr5::types::Address base_addr, const size_t size)
+      : memory_(base_addr, size) {}
+  MemoryBase() = delete;
   virtual ~MemoryBase() = default;
 
   inline void sendWord(xr5::types::Word word) {
@@ -44,6 +51,7 @@ protected:
 
 private:
   xr5::sim::Packet packet_;
+  MemoryManager<Data> memory_;
 };
 } // namespace memory
 

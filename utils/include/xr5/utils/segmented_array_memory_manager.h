@@ -19,7 +19,8 @@ using ByteArray =
 template <typename DataArray = ByteArray> class SegmentedArrayMemoryManager {
 
 public:
-  SegmentedArrayMemoryManager(const xr5::types::Address &base_addr, size_t size)
+  SegmentedArrayMemoryManager(const xr5::types::Address base_addr,
+                              const size_t size)
       : base_addr_(base_addr), size_(size) {}
 
   ~SegmentedArrayMemoryManager() = default;

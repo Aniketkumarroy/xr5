@@ -7,6 +7,7 @@ include(${CMAKE_SOURCE_DIR}/common.cmake)
 
 set(XR5_MEMORY_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(XR5_MEMORY_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/config)
 
 file(GLOB_RECURSE SRC CONFIGURE_DEPENDS
     ${XR5_MEMORY_SRC_DIR}/*.cc
@@ -17,6 +18,7 @@ set(LIBS xr5_utils xr5_sim)
 # Create static library
 add_library(${PROJECT_NAME} STATIC ${SRC})
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${XR5_MEMORY_INCLUDE_DIR}> $<INSTALL_INTERFACE:include>)
+target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CONFIG_DIR}> $<INSTALL_INTERFACE:config>)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 
 # For organizing output (optional)
@@ -27,6 +29,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 if(${FULL_BUILD})
   add_executable(${PROJECT_NAME}_demo demo/memory_demo.cc)
   target_include_directories(${PROJECT_NAME}_demo PUBLIC $<BUILD_INTERFACE:${XR5_MEMORY_INCLUDE_DIR}> $<INSTALL_INTERFACE:include>)
+  target_include_directories(${PROJECT_NAME}_demo PUBLIC $<BUILD_INTERFACE:${CONFIG_DIR}> $<INSTALL_INTERFACE:config>)
   target_link_libraries(${PROJECT_NAME}_demo PRIVATE ${LIBS})
   add_custom_command(TARGET ${PROJECT_NAME}_demo POST_BUILD COMMAND ${CMAKE_STRIP} $<TARGET_FILE:${PROJECT_NAME}_demo> )
 # install

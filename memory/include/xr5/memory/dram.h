@@ -1,30 +1,28 @@
 #ifndef DRAM_H_
 #define DRAM_H_
 
-#include "xr5/utils/segmented_array_memory_manager.h"
+#include "xr5/memory/memory_base.h"
 #include "xr5/utils/types.h"
 
 namespace xr5 {
 namespace memory {
 
-using DramMemorySegment =
-    xr5::utils::DataArray<xr5::types::Address, XR5_MEMORY_MANAGER_SEGMENT_SIZE>;
-
 struct DramParams {
-  xr5::types::Size capacity_;
-  uint16_t io_width_of_chip_;
-  uint8_t no_of_chips_per_rank_;
-  uint16_t rank_;
+  xr5::types::Size capacity;
+  uint16_t io_width_of_chip;
+  uint8_t no_of_chips_per_rank;
+  uint16_t rank;
 };
 
-class Dram {
+class Dram : public MemoryBase<xr5::types::Address> {
 
 public:
   Dram() = delete;
   Dram(const DramParams &params)
-      : params_(params),
-        memory_(0, params_.capacity_.bytes() / xr5::types::WordSize) {
-    assert(params_.io_width_of_chip_ * params_.no_of_chips_per_rank_ ==
+      : MemoryBase<xr5::types::Address>(0, params.capacity.bytes() /
+                                               xr5::types::WordSize),
+        params_(params) {
+    assert(params_.io_width_of_chip * params_.no_of_chips_per_rank ==
            xr5::types::WordSize * 8);
 
     data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
@@ -65,7 +63,6 @@ public:
 
 private:
   const DramParams params_;
-  xr5::utils::SegmentedArrayMemoryManager<DramMemorySegment> memory_;
 };
 
 } // namespace memory
