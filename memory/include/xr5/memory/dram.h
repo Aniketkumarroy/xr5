@@ -26,10 +26,41 @@ public:
         memory_(0, params_.capacity_.bytes() / xr5::types::WordSize) {
     assert(params_.io_width_of_chip_ * params_.no_of_chips_per_rank_ ==
            xr5::types::WordSize * 8);
+
+    data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
+        "data_port", xr5::sim::Port::getNewId());
+    address_port_ = xr5::utils::make_ptr<xr5::sim::Port, AddrPort>(
+        "data_port", xr5::sim::Port::getNewId());
+    command_port_ = xr5::utils::make_ptr<xr5::sim::Port, CmdPort>(
+        "data_port", xr5::sim::Port::getNewId());
   }
   ~Dram() = default;
 
-  const xr5::types::Size &getCapacity() { return params_.capacity_; }
+  class DataPort : public xr5::sim::Port {
+  public:
+    DataPort(const std::string &name, const xr5::sim::Port::Id id)
+        : xr5::sim::Port(name, id) {}
+
+    void receive(const xr5::sim::Packet *packet) override {}
+  };
+
+  class AddrPort : public xr5::sim::Port {
+  public:
+    AddrPort(const std::string &name, const xr5::sim::Port::Id id)
+        : xr5::sim::Port(name, id) {}
+
+    void receive(const xr5::sim::Packet *packet) override {}
+  };
+
+  class CmdPort : public xr5::sim::Port {
+  public:
+    CmdPort(const std::string &name, const xr5::sim::Port::Id id)
+        : xr5::sim::Port(name, id) {}
+
+    void receive(const xr5::sim::Packet *packet) override {}
+  };
+
+  const xr5::types::Size &getCapacity() { return params_.capacity; }
   const DramParams &getDramParams() { return params_; }
 
 private:

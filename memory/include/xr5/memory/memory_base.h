@@ -10,7 +10,7 @@ public:
   MemoryBase() = default;
   virtual ~MemoryBase() = default;
 
-  void sendWord(xr5::types::Word word) {
+  inline void sendWord(xr5::types::Word word) {
     packet_.data.word = word;
     packet_.type = xr5::sim::Packet::Type::WORD;
     data_port_->send(&packet_);
@@ -25,23 +25,24 @@ public:
    *
    * @return xr5::sim::Port* to the data_port_
    */
-  xr5::sim::Port *getDataPort() {
+  inline xr5::sim::Port *getDataPort() {
     return xr5::utils::get_raw_ptr<xr5::sim::Port>(data_port_);
   }
 
-  xr5::sim::Port *getCmdPort() {
+  inline xr5::sim::Port *getCmdPort() {
     return xr5::utils::get_raw_ptr<xr5::sim::Port>(command_port_);
   }
 
-  xr5::sim::Port *getAddrPort() {
+  inline xr5::sim::Port *getAddrPort() {
     return xr5::utils::get_raw_ptr<xr5::sim::Port>(address_port_);
   }
 
-private:
+protected:
   xr5::sim::Port::Ptr address_port_ = nullptr;
   xr5::sim::Port::Ptr command_port_ = nullptr;
   xr5::sim::Port::Ptr data_port_ = nullptr;
 
+private:
   xr5::sim::Packet packet_;
 };
 } // namespace memory
