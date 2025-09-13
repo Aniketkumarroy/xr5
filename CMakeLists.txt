@@ -35,3 +35,13 @@ set(LIBS xr5_utils xr5_memory xr5_sim)
 
 add_executable(xr5 main.cpp)
 target_link_libraries(xr5 PRIVATE ${LIBS})
+
+# install
+install(TARGETS xr5
+    RUNTIME DESTINATION bin
+)
+
+install(TARGETS ${LIBS}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+)

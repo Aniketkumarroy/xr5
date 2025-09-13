@@ -29,4 +29,18 @@ if(${FULL_BUILD})
   target_include_directories(${PROJECT_NAME}_demo PUBLIC $<BUILD_INTERFACE:${XR5_MEMORY_INCLUDE_DIR}> $<INSTALL_INTERFACE:include>)
   target_link_libraries(${PROJECT_NAME}_demo PRIVATE ${LIBS})
   add_custom_command(TARGET ${PROJECT_NAME}_demo POST_BUILD COMMAND ${CMAKE_STRIP} $<TARGET_FILE:${PROJECT_NAME}_demo> )
+# install
+install(TARGETS ${PROJECT_NAME}_demo
+    RUNTIME DESTINATION bin
+)
 endif(${FULL_BUILD})
+
+# install
+install(TARGETS ${PROJECT_NAME}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+)
+
+install(DIRECTORY ${XR5_MEMORY_INCLUDE_DIR}/
+    DESTINATION include
+)
