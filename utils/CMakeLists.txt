@@ -51,3 +51,7 @@ install(DIRECTORY ${XR5_UTILS_INCLUDE_DIR}/
     DESTINATION include
 )
 
+install(DIRECTORY ${CONFIG_DIR}/
+    DESTINATION include
+)
+

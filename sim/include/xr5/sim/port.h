@@ -115,7 +115,7 @@ public:
 
   const std::string &getName() { return name_; }
 
-  const Id getId() { return id_; }
+  Id getId() { return id_; }
 
   static Id getNewId() { return num_of_ports_minus_one_; }
 

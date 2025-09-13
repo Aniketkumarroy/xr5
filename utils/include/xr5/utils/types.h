@@ -1,7 +1,7 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
-#include "config.h"
+#include "xr5/config.h"
 #include <cstdint>
 #include <cstring>
 #include <limits>
