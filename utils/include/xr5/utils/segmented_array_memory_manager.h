@@ -24,7 +24,7 @@ public:
 
   ~SegmentedArrayMemoryManager() = default;
 
-  typename DataArray::DataType &at(const xr5::types::Address &addr) {
+  inline typename DataArray::DataType &at(const xr5::types::Address &addr) {
     if (!isValid(addr)) {
       auto logger = xr5::utils::Logger::GetInstance();
       logger->error(
@@ -97,7 +97,7 @@ public:
     }
   }
 
-  bool isValid(const xr5::types::Address &addr) {
+  inline bool isValid(const xr5::types::Address &addr) {
     return (base_addr_ <= addr) && (addr <= (base_addr_ + size_));
   }
 
