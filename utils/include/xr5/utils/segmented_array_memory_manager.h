@@ -25,7 +25,7 @@ public:
 
   ~SegmentedArrayMemoryManager() = default;
 
-  inline typename DataArray::DataType &at(const xr5::types::Address &addr) {
+  inline typename DataArray::DataType &at(const xr5::types::Address addr) {
     if (!isValid(addr)) {
       auto logger = xr5::utils::Logger::GetInstance();
       logger->error(
@@ -44,7 +44,7 @@ public:
     }
   }
 
-  bool allocateMemory(const xr5::types::Address &addr) {
+  bool allocateMemory(const xr5::types::Address addr) {
     if (!isValid(addr)) {
       auto logger = xr5::utils::Logger::GetInstance();
       logger->error(
@@ -67,7 +67,7 @@ public:
     }
   }
 
-  void removeMemory(const xr5::types::Address &addr) {
+  void removeMemory(const xr5::types::Address addr) {
     if (!isValid(addr)) {
       auto logger = xr5::utils::Logger::GetInstance();
       logger->error("[SegmentedArrayMemoryManager::removeMemory] {} is out of "
@@ -98,7 +98,7 @@ public:
     }
   }
 
-  inline bool isValid(const xr5::types::Address &addr) {
+  inline bool isValid(const xr5::types::Address addr) {
     return (base_addr_ <= addr) && (addr <= (base_addr_ + size_));
   }
 
