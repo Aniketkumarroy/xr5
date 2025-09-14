@@ -2,7 +2,6 @@
 #define MEMORY_BASE_H_
 #include "xr5/memory_config.h"
 #include "xr5/sim/port.h"
-#include "xr5/utils/segmented_array_memory_manager.h"
 #include "xr5/utils/utils.h"
 
 namespace xr5 {
@@ -42,6 +41,14 @@ public:
 
   inline xr5::sim::Port *getAddrPort() {
     return xr5::utils::get_raw_ptr<xr5::sim::Port>(address_port_);
+  }
+
+  inline Data getData(const xr5::types::Address addr) {
+    return memory_.at(addr);
+  }
+
+  inline void setData(const xr5::types::Address addr, const Data data) {
+    memory_.at(addr) = data;
   }
 
 protected:
