@@ -36,26 +36,37 @@ public:
 
   class DataPort : public xr5::sim::Port {
   public:
-    DataPort(const std::string &name, const xr5::sim::Port::Id id)
-        : xr5::sim::Port(name, id) {}
+    DataPort(const std::string &name, const xr5::sim::Port::Id id,
+             Dram *mem_obj)
+        : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
 
     void receive(const xr5::sim::Packet *packet) override {}
+
+  private:
+    Dram *mem_obj_;
   };
 
   class AddrPort : public xr5::sim::Port {
   public:
-    AddrPort(const std::string &name, const xr5::sim::Port::Id id)
-        : xr5::sim::Port(name, id) {}
+    AddrPort(const std::string &name, const xr5::sim::Port::Id id,
+             Dram *mem_obj)
+        : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
 
     void receive(const xr5::sim::Packet *packet) override {}
+
+  private:
+    Dram *mem_obj_;
   };
 
   class CmdPort : public xr5::sim::Port {
   public:
-    CmdPort(const std::string &name, const xr5::sim::Port::Id id)
-        : xr5::sim::Port(name, id) {}
+    CmdPort(const std::string &name, const xr5::sim::Port::Id id, Dram *mem_obj)
+        : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
 
     void receive(const xr5::sim::Packet *packet) override {}
+
+  private:
+    Dram *mem_obj_;
   };
 
   const xr5::types::Size &getCapacity() { return params_.capacity; }
@@ -63,6 +74,8 @@ public:
 
 private:
   const DramParams params_;
+  xr5::types::Address addr_;
+  xr5::types::Word data_;
 };
 
 } // namespace memory
