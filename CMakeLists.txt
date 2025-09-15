@@ -30,6 +30,7 @@ endif()
 add_subdirectory(utils)
 add_subdirectory(memory)
 add_subdirectory(sim)
+add_subdirectory(params)
 
 set(LIBS xr5_utils xr5_memory xr5_sim)
 

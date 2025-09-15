@@ -13,7 +13,7 @@ file(GLOB_RECURSE SRC CONFIGURE_DEPENDS
     ${XR5_MEMORY_SRC_DIR}/*.cc
 )
 
-set(LIBS xr5_utils xr5_sim)
+set(LIBS xr5_utils xr5_sim xr5_params)
 
 # Create static library
 add_library(${PROJECT_NAME} STATIC ${SRC})
