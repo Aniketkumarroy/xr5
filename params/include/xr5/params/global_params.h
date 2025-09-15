@@ -1,6 +1,7 @@
 #ifndef GLOBAL_PARAMS_H_
 #define GLOBAL_PARAMS_H_
 
+#include "xr5/utils/logger.h"
 #include <memory>
 #include <mutex>
 #include <string>
@@ -33,8 +34,11 @@ public:
   static void init(const std::string &config_root) {
     static std::mutex mutex;
     std::lock_guard<std::mutex> lock(mutex);
-    if (params_ != nullptr)
+    if (params_ != nullptr) {
+      auto logger = xr5::utils::Logger::GetInstance();
+      logger->warn("[GlobalParams::init] params is already initialized");
       return;
+    }
     // struct TShared : public T {};
     params_ = std::make_shared<T>(config_root);
   }

@@ -13,7 +13,7 @@ file(GLOB_RECURSE SRC CONFIGURE_DEPENDS
     ${XR5_PARAMS_SRC_DIR}/*.cc
 )
 
-set(LIBS)
+set(LIBS xr5_utils)
 
 # Create static library
 add_library(${PROJECT_NAME} STATIC ${SRC})
