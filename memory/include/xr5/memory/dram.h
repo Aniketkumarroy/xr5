@@ -26,11 +26,11 @@ public:
            xr5::types::WordSize * 8);
 
     data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
-        "data_port", xr5::sim::Port::getNewId());
+        "data_port", xr5::sim::Port::getNewId(), this);
     address_port_ = xr5::utils::make_ptr<xr5::sim::Port, AddrPort>(
-        "data_port", xr5::sim::Port::getNewId());
+        "data_port", xr5::sim::Port::getNewId(), this);
     command_port_ = xr5::utils::make_ptr<xr5::sim::Port, CmdPort>(
-        "data_port", xr5::sim::Port::getNewId());
+        "data_port", xr5::sim::Port::getNewId(), this);
   }
   ~Dram() = default;
 

@@ -17,7 +17,7 @@ public:
   virtual ~MemoryBase() = default;
 
   inline void sendWord(xr5::types::Word word) {
-    packet_.data.word = word;
+    packet_.word = word;
     packet_.type = xr5::sim::Packet::Type::WORD;
     data_port_->send(&packet_);
   }
