@@ -35,9 +35,9 @@ struct Packet {
     } coherence;
 
     struct {
-      int bank;
-      int row;
-      int col;
+      uint64_t bank;
+      uint64_t row;
+      uint64_t col;
       bool isRead; // DRAM read/write command
     } dram;
 
