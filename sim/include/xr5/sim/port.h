@@ -22,11 +22,11 @@ struct Packet {
   };
 
   Type type;
+  xr5::types::Address addr;
+  xr5::types::Word word;
 
   // ---- Type-specific data ----
   union Data {
-    xr5::types::Address addr;
-    xr5::types::Word word;
 
     struct {
       int srcId;
