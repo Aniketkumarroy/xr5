@@ -22,6 +22,8 @@ void Logger::init(const std::string &log_file, const int log_level,
                   const int log_level_console, const std::string &logger_name,
                   const unsigned int number_of_log_files,
                   const std::string &log_dir, const bool use_async_logger) {
+  static std::mutex mutex;
+  std::lock_guard<std::mutex> lock(mutex);
   if (logger_ != nullptr) {
     logger_->warn("[Logger::initLogger] Logger is already initialized");
     return;

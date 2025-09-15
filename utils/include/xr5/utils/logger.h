@@ -9,6 +9,7 @@
 #include <spdlog/spdlog.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -24,12 +25,12 @@ public:
   /**
    * @brief As this class should not be cloneable.
    */
-  Logger(Logger &other) = delete;
+  Logger(const Logger &other) = delete;
 
   /**
    * @brief As this class should not be assignable.
    */
-  void operator=(const Logger &) = delete;
+  Logger &operator=(const Logger &) = delete;
   /**
    * @brief Initialize the logger
    *
