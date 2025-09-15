@@ -2,6 +2,7 @@
 #define GLOBAL_PARAMS_H_
 
 #include "xr5/utils/logger.h"
+#include "xr5/utils/types.h"
 #include <memory>
 #include <mutex>
 #include <string>
@@ -30,8 +31,7 @@ public:
    *
    * @param config_root root folder of the config
    */
-  template <typename T>
-  static void init(const std::string &config_root) {
+  template <typename T> static void init(const std::string &config_root) {
     static std::mutex mutex;
     std::lock_guard<std::mutex> lock(mutex);
     if (params_ != nullptr) {
@@ -50,11 +50,48 @@ public:
    */
   static std::shared_ptr<GlobalParams> GetInstance() { return params_; }
 
+  /**
+   * @TODO: instead of hardcoding the unit to picosec, make it flexible to be
+   * auto adjust according to simulator's simulated time granularity
+   */
+  inline const xr5::types::Tick getDramDataReceiveDelayInPicoSec() const {
+    return dram_data_receive_delay_.picosec();
+  }
+
+  inline const xr5::types::Time &getDramDataReceiveDelay() const {
+    return dram_data_receive_delay_;
+  }
+
+  inline const xr5::types::Tick getDramAddrReceiveDelayInPicoSec() const {
+    return dram_addr_receive_delay_.picosec();
+  }
+
+  inline const xr5::types::Time &getDramAddrReceiveDelay() const {
+    return dram_addr_receive_delay_;
+  }
+
+  inline const xr5::types::Tick getDramCmdReceiveDelayInPicoSec() const {
+    return dram_cmd_receive_delay_.picosec();
+  }
+
+  inline const xr5::types::Time &getDramCmdReceiveDelay() const {
+    return dram_cmd_receive_delay_;
+  }
+
+  inline const xr5::types::Size &getDramCapacity() const {
+    return dram_capacity_;
+  }
+
 private:
   explicit GlobalParams(const std::string &config_root)
       : config_root_(config_root) {}
   static std::shared_ptr<GlobalParams> params_;
   std::string config_root_;
+
+  xr5::types::Time dram_data_receive_delay_;
+  xr5::types::Time dram_addr_receive_delay_;
+  xr5::types::Time dram_cmd_receive_delay_;
+  xr5::types::Size dram_capacity_;
 };
 } // namespace params
 } // namespace xr5
