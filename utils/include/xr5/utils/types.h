@@ -121,6 +121,61 @@ public:
 private:
   Tick picoseconds_;
 };
+
+class Freq {
+public:
+  enum class Unit : uint64_t {
+    Hz = 1ULL,
+    KHz = 1000ULL * Hz,
+    MHz = 1000ULL * KHz,
+    GHz = 1000ULL * MHz,
+    THz = 1000ULL * GHz
+  };
+
+  Freq() : cycles_in_hz_(0) {}
+  Freq(Cycle value, Unit unit)
+      : cycles_in_hz_(value * static_cast<uint64_t>(unit)) {}
+
+  static Freq Hertz(Cycle hz) { return Freq(hz, Unit::Hz); }
+  static Freq KiloHertz(Cycle khz) { return Freq(khz, Unit::KHz); }
+  static Freq MegaHertz(Cycle mhz) { return Freq(mhz, Unit::MHz); }
+  static Freq GigaHertz(Cycle ghz) { return Freq(ghz, Unit::GHz); }
+  static Freq TeraHertz(Cycle thz) { return Freq(thz, Unit::THz); }
+
+  Cycle hertz() const { return cycles_in_hz_; }
+
+  double as(Unit unit) const {
+    return static_cast<double>(cycles_in_hz_) / static_cast<double>(unit);
+  }
+
+  double getPeriodInSec() {
+    return cycles_in_hz_ ? 1.0 / static_cast<double>(cycles_in_hz_) : 0.0;
+  }
+
+  Time getPeriod() {
+    return Time::PicoSec(static_cast<Tick>(1.0 / as(Unit::THz)));
+  }
+
+  Freq operator+(const Freq &other) const {
+    return Freq::Hertz(cycles_in_hz_ + other.cycles_in_hz_);
+  }
+
+  Freq &operator+=(const Freq &other) {
+    cycles_in_hz_ += other.cycles_in_hz_;
+    return *this;
+  }
+
+  bool operator<(const Freq &other) const {
+    return cycles_in_hz_ < other.cycles_in_hz_;
+  }
+
+  bool operator==(const Freq &other) const {
+    return cycles_in_hz_ == other.cycles_in_hz_;
+  }
+
+private:
+  Cycle cycles_in_hz_;
+};
 } // namespace types
 } // namespace xr5
 
