@@ -51,7 +51,7 @@ public:
   static std::shared_ptr<GlobalParams> GetInstance() { return params_; }
 
   /**
-   * @TODO: instead of hardcoding the unit to picosec, make it flexible to be
+   * TODO: instead of hardcoding the unit to picosec, make it flexible to be
    * auto adjust according to simulator's simulated time granularity
    */
   inline const xr5::types::Tick getDramDataReceiveDelayInPicoSec() const {

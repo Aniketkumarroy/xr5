@@ -10,6 +10,7 @@ namespace xr5 {
 namespace types {
 
 using Tick = uint64_t;
+using Cycle = uint64_t;
 #define MAX_TICK std::numeric_limits<xr5::types::Tick>::max()
 
 using Address64 = uint64_t;
@@ -51,7 +52,7 @@ public:
   uint64_t bytes() const { return bytes_; }
 
   double as(Unit unit) const {
-    return static_cast<double>(bytes_) / static_cast<uint64_t>(unit);
+    return static_cast<double>(bytes_) / static_cast<double>(unit);
   }
 
   Size operator+(const Size &other) const {
@@ -88,12 +89,18 @@ public:
   static Time MiliSec(uint64_t ms) { return Time(ms, Unit::MS); }
   static Time MicroDec(uint64_t us) { return Time(us, Unit::US); }
   static Time NanoSec(uint64_t ns) { return Time(ns, Unit::NS); }
-  static Time PicoSec(uint64_t ps) { return Time(ps, Unit::NS); }
+  static Time PicoSec(uint64_t ps) { return Time(ps, Unit::PS); }
 
   Tick picosec() const { return picoseconds_; }
 
   double as(Unit unit) const {
-    return static_cast<double>(picoseconds_) / static_cast<Tick>(unit);
+    return static_cast<double>(picoseconds_) / static_cast<double>(unit);
+  }
+
+  double getFreqInHertz() { return 1.0 / as(Unit::S); }
+
+  Freq getFrequency() {
+    return Freq::Hertz(static_cast<Cycle>(1.0 / as(Unit::S)));
   }
 
   Time operator+(const Time &other) const {
