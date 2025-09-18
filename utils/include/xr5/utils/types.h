@@ -27,7 +27,7 @@ using Address = Address32;
 #endif
 
 using Word = Address;
-uint64_t WordSize = sizeof(Address);
+constexpr uint64_t WordSize = sizeof(Address);
 
 class Size {
 public:
@@ -38,39 +38,48 @@ public:
     GB = 1024ULL * MB
   };
 
-  Size() : bytes_(0) {}
-  Size(uint64_t value, Unit unit)
+  constexpr Size() : bytes_(0) {}
+  constexpr Size(uint64_t value, Unit unit) noexcept
       : bytes_(value * static_cast<uint64_t>(unit)) {}
 
-  ~Size() = default;
+  static constexpr Size Byte(uint64_t b) noexcept { return Size(b, Unit::B); }
+  static constexpr Size KiloByte(uint64_t k) noexcept {
+    return Size(k, Unit::KB);
+  }
+  static constexpr Size MegaByte(uint64_t m) noexcept {
+    return Size(m, Unit::MB);
+  }
+  static constexpr Size GigaByte(uint64_t g) noexcept {
+    return Size(g, Unit::GB);
+  }
 
-  static Size Byte(uint64_t b) { return Size(b, Unit::B); }
-  static Size KiloByte(uint64_t k) { return Size(k, Unit::KB); }
-  static Size MegaByte(uint64_t m) { return Size(m, Unit::MB); }
-  static Size GigaByte(uint64_t g) { return Size(g, Unit::GB); }
+  inline constexpr uint64_t bytes() const noexcept { return bytes_; }
 
-  uint64_t bytes() const { return bytes_; }
-
-  double as(Unit unit) const {
+  inline constexpr double as(Unit unit) const noexcept {
     return static_cast<double>(bytes_) / static_cast<double>(unit);
   }
 
-  Size operator+(const Size &other) const {
+  inline constexpr Size operator+(const Size &other) const noexcept {
     return Size::Byte(bytes_ + other.bytes_);
   }
 
-  Size &operator+=(const Size &other) {
+  Size &operator+=(const Size &other) noexcept {
     bytes_ += other.bytes_;
     return *this;
   }
 
-  bool operator<(const Size &other) const { return bytes_ < other.bytes_; }
-  bool operator==(const Size &other) const { return bytes_ == other.bytes_; }
+  constexpr bool operator<(const Size &other) const noexcept {
+    return bytes_ < other.bytes_;
+  }
+  constexpr bool operator==(const Size &other) const noexcept {
+    return bytes_ == other.bytes_;
+  }
 
 private:
   uint64_t bytes_;
 };
 
+class Freq; // forward declaration
 class Time {
 public:
   enum class Unit : Tick {
@@ -81,47 +90,57 @@ public:
     S = 1000ULL * MS
   };
 
-  Time() : picoseconds_(0) {}
-  Time(Tick value, Unit unit)
+  constexpr Time() : picoseconds_(0) {}
+  constexpr Time(Tick value, Unit unit)
       : picoseconds_(value * static_cast<uint64_t>(unit)) {}
 
-  static Time Sec(uint64_t s) { return Time(s, Unit::S); }
-  static Time MiliSec(uint64_t ms) { return Time(ms, Unit::MS); }
-  static Time MicroDec(uint64_t us) { return Time(us, Unit::US); }
-  static Time NanoSec(uint64_t ns) { return Time(ns, Unit::NS); }
-  static Time PicoSec(uint64_t ps) { return Time(ps, Unit::PS); }
+  static constexpr Time Sec(uint64_t s) noexcept { return Time(s, Unit::S); }
+  static constexpr Time MiliSec(uint64_t ms) noexcept {
+    return Time(ms, Unit::MS);
+  }
+  static constexpr Time MicroSec(uint64_t us) noexcept {
+    return Time(us, Unit::US);
+  }
+  static constexpr Time NanoSec(uint64_t ns) noexcept {
+    return Time(ns, Unit::NS);
+  }
+  static constexpr Time PicoSec(uint64_t ps) noexcept {
+    return Time(ps, Unit::PS);
+  }
 
-  Tick picosec() const { return picoseconds_; }
+  inline constexpr Tick picosec() const noexcept { return picoseconds_; }
 
-  double as(Unit unit) const {
+  inline constexpr double as(Unit unit) const noexcept {
     return static_cast<double>(picoseconds_) / static_cast<double>(unit);
   }
 
-  double getFreqInHertz() { return 1.0 / as(Unit::S); }
-
-  Freq getFrequency() {
-    return Freq::Hertz(static_cast<Cycle>(1.0 / as(Unit::S)));
+  inline constexpr double getFreqInHertz() const noexcept {
+    if (picoseconds_ != 0)
+      return static_cast<double>(Unit::S) / static_cast<double>(picoseconds_);
+    return 0.0;
   }
 
-  Time operator+(const Time &other) const {
+  inline constexpr Freq getFrequency() const noexcept;
+
+  constexpr Time operator+(const Time &other) const noexcept {
     return Time::PicoSec(picoseconds_ + other.picoseconds_);
   }
 
-  Time &operator+=(const Time &other) {
+  Time &operator+=(const Time &other) noexcept {
     picoseconds_ += other.picoseconds_;
     return *this;
   }
 
-  Time &operator++() {
+  Time &operator++() noexcept {
     ++picoseconds_;
     return *this;
   }
 
-  bool operator<(const Time &other) const {
+  constexpr bool operator<(const Time &other) const noexcept {
     return picoseconds_ < other.picoseconds_;
   }
 
-  bool operator==(const Time &other) const {
+  constexpr bool operator==(const Time &other) const noexcept {
     return picoseconds_ == other.picoseconds_;
   }
 
@@ -139,51 +158,68 @@ public:
     THz = 1000ULL * GHz
   };
 
-  Freq() : cycles_in_hz_(0) {}
-  Freq(Cycle value, Unit unit)
+  constexpr Freq() : cycles_in_hz_(0) {}
+  constexpr Freq(Cycle value, Unit unit) noexcept
       : cycles_in_hz_(value * static_cast<uint64_t>(unit)) {}
 
-  static Freq Hertz(Cycle hz) { return Freq(hz, Unit::Hz); }
-  static Freq KiloHertz(Cycle khz) { return Freq(khz, Unit::KHz); }
-  static Freq MegaHertz(Cycle mhz) { return Freq(mhz, Unit::MHz); }
-  static Freq GigaHertz(Cycle ghz) { return Freq(ghz, Unit::GHz); }
-  static Freq TeraHertz(Cycle thz) { return Freq(thz, Unit::THz); }
+  static constexpr Freq Hertz(Cycle hz) noexcept { return Freq(hz, Unit::Hz); }
+  static constexpr Freq KiloHertz(Cycle khz) noexcept {
+    return Freq(khz, Unit::KHz);
+  }
+  static constexpr Freq MegaHertz(Cycle mhz) noexcept {
+    return Freq(mhz, Unit::MHz);
+  }
+  static constexpr Freq GigaHertz(Cycle ghz) noexcept {
+    return Freq(ghz, Unit::GHz);
+  }
+  static constexpr Freq TeraHertz(Cycle thz) noexcept {
+    return Freq(thz, Unit::THz);
+  }
 
-  Cycle hertz() const { return cycles_in_hz_; }
+  inline constexpr Cycle hertz() const noexcept { return cycles_in_hz_; }
 
-  double as(Unit unit) const {
+  inline constexpr double as(Unit unit) const noexcept {
     return static_cast<double>(cycles_in_hz_) / static_cast<double>(unit);
   }
 
-  double getPeriodInSec() {
-    return cycles_in_hz_ ? 1.0 / static_cast<double>(cycles_in_hz_) : 0.0;
+  inline constexpr double getPeriodInSec() const noexcept {
+    if (cycles_in_hz_ != 0)
+      return 1.0 / static_cast<double>(cycles_in_hz_);
+    return 0.0;
   }
 
-  Time getPeriod() {
-    return Time::PicoSec(static_cast<Tick>(1.0 / as(Unit::THz)));
-  }
+  inline constexpr Time getPeriod() const noexcept;
 
-  Freq operator+(const Freq &other) const {
+  constexpr Freq operator+(const Freq &other) const noexcept {
     return Freq::Hertz(cycles_in_hz_ + other.cycles_in_hz_);
   }
 
-  Freq &operator+=(const Freq &other) {
+  Freq &operator+=(const Freq &other) noexcept {
     cycles_in_hz_ += other.cycles_in_hz_;
     return *this;
   }
 
-  bool operator<(const Freq &other) const {
+  constexpr bool operator<(const Freq &other) const noexcept {
     return cycles_in_hz_ < other.cycles_in_hz_;
   }
 
-  bool operator==(const Freq &other) const {
+  constexpr bool operator==(const Freq &other) const noexcept {
     return cycles_in_hz_ == other.cycles_in_hz_;
   }
 
 private:
   Cycle cycles_in_hz_;
 };
+
+inline constexpr Freq Time::getFrequency() const noexcept {
+  return Freq::Hertz(static_cast<Cycle>(getFreqInHertz()));
+}
+
+inline constexpr Time Freq::getPeriod() const noexcept {
+  return Time::PicoSec(static_cast<Tick>(static_cast<double>(Unit::THz) /
+                                         static_cast<double>(cycles_in_hz_)));
+}
 } // namespace types
 } // namespace xr5
 
-#endif
+#endif // !TYPES_H_
