@@ -17,6 +17,7 @@ using Address64 = uint64_t;
 using Address32 = uint32_t;
 using Byte = uint8_t;
 using TimeStamp = double;
+using Scalar = float;
 
 #if XR5_ADDR_WIDTH == 64
 using Address = Address64;
@@ -55,8 +56,8 @@ public:
 
   inline constexpr uint64_t bytes() const noexcept { return bytes_; }
 
-  inline constexpr double as(Unit unit) const noexcept {
-    return static_cast<double>(bytes_) / static_cast<double>(unit);
+  inline constexpr Scalar as(Unit unit) const noexcept {
+    return static_cast<Scalar>(bytes_) / static_cast<Scalar>(unit);
   }
 
   inline constexpr Size operator+(const Size &other) const noexcept {
@@ -110,13 +111,13 @@ public:
 
   inline constexpr Tick picosec() const noexcept { return picoseconds_; }
 
-  inline constexpr double as(Unit unit) const noexcept {
-    return static_cast<double>(picoseconds_) / static_cast<double>(unit);
+  inline constexpr Scalar as(Unit unit) const noexcept {
+    return static_cast<Scalar>(picoseconds_) / static_cast<Scalar>(unit);
   }
 
-  inline constexpr double getFreqInHertz() const noexcept {
+  inline constexpr Scalar getFreqInHertz() const noexcept {
     if (picoseconds_ != 0)
-      return static_cast<double>(Unit::S) / static_cast<double>(picoseconds_);
+      return static_cast<Scalar>(Unit::S) / static_cast<Scalar>(picoseconds_);
     return 0.0;
   }
 
@@ -133,6 +134,15 @@ public:
 
   Time &operator++() noexcept {
     ++picoseconds_;
+    return *this;
+  }
+
+  Time operator*(Scalar multiplier) const noexcept {
+    return Time::PicoSec(static_cast<uint64_t>(picoseconds_ * multiplier));
+  }
+
+  Time &operator*=(Scalar multiplier) noexcept {
+    picoseconds_ = static_cast<uint64_t>(picoseconds_ * multiplier);
     return *this;
   }
 
@@ -178,13 +188,13 @@ public:
 
   inline constexpr Cycle hertz() const noexcept { return cycles_in_hz_; }
 
-  inline constexpr double as(Unit unit) const noexcept {
-    return static_cast<double>(cycles_in_hz_) / static_cast<double>(unit);
+  inline constexpr Scalar as(Unit unit) const noexcept {
+    return static_cast<Scalar>(cycles_in_hz_) / static_cast<Scalar>(unit);
   }
 
-  inline constexpr double getPeriodInSec() const noexcept {
+  inline constexpr Scalar getPeriodInSec() const noexcept {
     if (cycles_in_hz_ != 0)
-      return 1.0 / static_cast<double>(cycles_in_hz_);
+      return 1.0 / static_cast<Scalar>(cycles_in_hz_);
     return 0.0;
   }
 
@@ -196,6 +206,15 @@ public:
 
   Freq &operator+=(const Freq &other) noexcept {
     cycles_in_hz_ += other.cycles_in_hz_;
+    return *this;
+  }
+
+  Freq operator*(Scalar multiplier) const noexcept {
+    return Freq::Hertz(static_cast<Cycle>(cycles_in_hz_ * multiplier));
+  }
+
+  Freq &operator*=(Scalar multiplier) noexcept {
+    cycles_in_hz_ = static_cast<Cycle>(cycles_in_hz_ * multiplier);
     return *this;
   }
 
@@ -216,8 +235,8 @@ inline constexpr Freq Time::getFrequency() const noexcept {
 }
 
 inline constexpr Time Freq::getPeriod() const noexcept {
-  return Time::PicoSec(static_cast<Tick>(static_cast<double>(Unit::THz) /
-                                         static_cast<double>(cycles_in_hz_)));
+  return Time::PicoSec(static_cast<Tick>(static_cast<Scalar>(Unit::THz) /
+                                         static_cast<Scalar>(cycles_in_hz_)));
 }
 } // namespace types
 } // namespace xr5
