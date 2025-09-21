@@ -23,9 +23,9 @@ public:
     return freq_in_hertz_;
   }
 
-  void updatePeriodAndFrequency(const xr5::types::Time &period) noexcept;
+  void setPeriodAndFrequency(const xr5::types::Time &period) noexcept;
 
-  void updatePeriodAndFrequency(const xr5::types::Freq &freq) noexcept;
+  void setPeriodAndFrequency(const xr5::types::Freq &freq) noexcept;
 
 protected:
   xr5::types::Freq freq_;
@@ -39,23 +39,23 @@ protected:
   xr5::types::Cycle freq_in_hertz_;
 };
 
+class DerivedClockDomain; // forward declaration
 class SrcClockDomain : public ClockDomain {
 public:
   SrcClockDomain() = delete;
   SrcClockDomain(const xr5::types::Time &period) noexcept {
-    updatePeriodAndFrequency(period);
+    setPeriodAndFrequency(period);
   }
   SrcClockDomain(const xr5::types::Freq &freq) noexcept {
-    updatePeriodAndFrequency(freq);
+    setPeriodAndFrequency(freq);
   }
-  ~SrcClockDomain() = default;
+  ~SrcClockDomain();
 
   void updateDerivedClockDomains();
 
-  void registerDerivedClockDomain(const DerivedClockDomain *derived_clk_domain);
+  void registerDerivedClockDomain(DerivedClockDomain *derived_clk_domain);
 
-  void
-  deRegisterDerivedClockDomain(const DerivedClockDomain *derived_clk_domain);
+  void deRegisterDerivedClockDomain(DerivedClockDomain *derived_clk_domain);
 
 private:
   std::vector<DerivedClockDomain *> derived_clock_domains_;
@@ -64,22 +64,28 @@ private:
 class DerivedClockDomain : public ClockDomain {
 public:
   DerivedClockDomain() = delete;
-  DerivedClockDomain(const SrcClockDomain *src_clk_domain,
-                     const xr5::types::Scalar freq_multiplier) {
-    registerSrcClockDomain(src_clk_domain);
-    freq_scalar_ = freq_multiplier;
-  }
-  ~DerivedClockDomain() = default;
+  DerivedClockDomain(SrcClockDomain *src_clk_domain,
+                     const xr5::types::Scalar freq_multiplier);
+  ~DerivedClockDomain();
 
-  inline void
-  registerSrcClockDomain(const SrcClockDomain *src_clk_domain) noexcept {
+  void setFreqMultiplier(const double multiplier) noexcept {
+    freq_scalar_ = multiplier;
+  }
+
+private:
+  /** NOTE: this functions are made private so that no one except the src clock
+   * can change the clock params or deregisters itself.
+   */
+  inline void registerSrcClockDomain(SrcClockDomain *src_clk_domain) noexcept {
     src_clock_ = src_clk_domain;
   }
   inline void deRegisterSrcClockDomain() noexcept { src_clock_ = nullptr; }
+  void updatePeriodAndFrequencyFromSource();
 
-private:
   xr5::types::Scalar freq_scalar_;
   SrcClockDomain *src_clock_;
+
+  friend SrcClockDomain;
 };
 } // namespace sim
 
