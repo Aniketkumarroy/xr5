@@ -11,9 +11,25 @@ template <typename Data,
           template <typename> class MemoryManager = DefaultMemoryManager>
 class MemoryBase {
 public:
-  MemoryBase(const xr5::types::Address base_addr, const size_t size)
-      : memory_(base_addr, size) {}
   MemoryBase() = delete;
+  MemoryBase(const xr5::types::Address base_addr, const size_t size)
+      : memory_(base_addr, size) {
+    data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
+        "data_port", xr5::sim::Port::getNewId(), this);
+    address_port_ = xr5::utils::make_ptr<xr5::sim::Port, AddrPort>(
+        "address_port", xr5::sim::Port::getNewId(), this);
+    command_port_ = xr5::utils::make_ptr<xr5::sim::Port, CmdPort>(
+        "command_port", xr5::sim::Port::getNewId(), this);
+  }
+
+  MemoryBase(const xr5::types::Address base_addr, const size_t size,
+             xr5::sim::Port::Ptr data_port, xr5::sim::Port::Ptr addr_port,
+             xr5::sim::Port::Ptr cmd_port)
+      : memory_(base_addr, size) {
+    data_port_ = std::move(data_port);
+    address_port_ = std::move(addr_port);
+    command_port_ = std::move(cmd_port);
+  }
   virtual ~MemoryBase() = default;
 
   inline void sendWord(xr5::types::Word word) {
@@ -50,6 +66,42 @@ public:
   inline void setData(const xr5::types::Address addr, const Data data) {
     memory_.at(addr) = data;
   }
+
+  class DataPort : public xr5::sim::Port {
+  public:
+    DataPort(const std::string &name, const xr5::sim::Port::Id id,
+             MemoryBase *mem_obj)
+        : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
+
+    void receive(const xr5::sim::Packet *packet) override {}
+
+  private:
+    MemoryBase *mem_obj_;
+  };
+
+  class AddrPort : public xr5::sim::Port {
+  public:
+    AddrPort(const std::string &name, const xr5::sim::Port::Id id,
+             MemoryBase *mem_obj)
+        : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
+
+    void receive(const xr5::sim::Packet *packet) override {}
+
+  private:
+    MemoryBase *mem_obj_;
+  };
+
+  class CmdPort : public xr5::sim::Port {
+  public:
+    CmdPort(const std::string &name, const xr5::sim::Port::Id id,
+            MemoryBase *mem_obj)
+        : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
+
+    void receive(const xr5::sim::Packet *packet) override {}
+
+  private:
+    MemoryBase *mem_obj_;
+  };
 
 protected:
   xr5::sim::Port::Ptr address_port_ = nullptr;
