@@ -52,11 +52,33 @@ public:
   }
 
   inline xr5::sim::Port *getCmdPort() {
-    return xr5::utils::get_raw_ptr<xr5::sim::Port>(command_port_);
+    return xr5::utils::get_raw_ptr<xr5::sim::Port>(cmd_port_);
   }
 
   inline xr5::sim::Port *getAddrPort() {
-    return xr5::utils::get_raw_ptr<xr5::sim::Port>(address_port_);
+    return xr5::utils::get_raw_ptr<xr5::sim::Port>(addr_port_);
+  }
+
+  inline xr5::sim::Port *getPort(const std::string &name) {
+    if (name == data_port_->getName())
+      return getDataPort();
+    else if (name == addr_port_->getName())
+      return getAddrPort();
+    else if (name == cmd_port_->getName())
+      return getCmdPort();
+    else
+      return nullptr;
+  }
+
+  inline xr5::sim::Port *getPort(const xr5::sim::Port::Id id) {
+    if (id == data_port_->getId())
+      return getDataPort();
+    else if (id == addr_port_->getId())
+      return getAddrPort();
+    else if (id == cmd_port_->getId())
+      return getCmdPort();
+    else
+      return nullptr;
   }
 
   inline Data getData(const xr5::types::Address addr) {
