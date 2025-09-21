@@ -34,12 +34,9 @@ struct Packet {
       int state; // e.g., MESI state
     } coherence;
 
-    struct {
-      uint64_t bank;
-      uint64_t row;
-      uint64_t col;
-      bool isRead; // DRAM read/write command
-    } dram;
+    xr5::types::DramAddr dram_addr;
+
+    xr5::types::DramCmd dram_cmd;
 
     struct {
       int barrierType; // full fence, store fence, etc.

@@ -230,6 +230,8 @@ private:
   Cycle cycles_in_hz_;
 };
 
+/** NOTE: unable to define this function inside Time class since compiler
+ * complains about not finding Freq::Hertz */
 inline constexpr Freq Time::getFrequency() const noexcept {
   return Freq::Hertz(static_cast<Cycle>(getFreqInHertz()));
 }
@@ -238,6 +240,18 @@ inline constexpr Time Freq::getPeriod() const noexcept {
   return Time::PicoSec(static_cast<Tick>(static_cast<Scalar>(Unit::THz) /
                                          static_cast<Scalar>(cycles_in_hz_)));
 }
+
+struct DramAddr {
+  uint64_t bank;
+  uint64_t row;
+  uint64_t col;
+  bool isRead; // DRAM read/write command
+};
+
+enum class DramCmd : uint8_t {
+  ACTIVATE,
+  PRECHARGE
+};
 } // namespace types
 } // namespace xr5
 

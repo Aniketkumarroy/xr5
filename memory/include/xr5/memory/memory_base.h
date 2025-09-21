@@ -16,9 +16,9 @@ public:
       : memory_(base_addr, size) {
     data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
         "data_port", xr5::sim::Port::getNewId(), this);
-    address_port_ = xr5::utils::make_ptr<xr5::sim::Port, AddrPort>(
+    addr_port_ = xr5::utils::make_ptr<xr5::sim::Port, AddrPort>(
         "address_port", xr5::sim::Port::getNewId(), this);
-    command_port_ = xr5::utils::make_ptr<xr5::sim::Port, CmdPort>(
+    cmd_port_ = xr5::utils::make_ptr<xr5::sim::Port, CmdPort>(
         "command_port", xr5::sim::Port::getNewId(), this);
   }
 
@@ -27,8 +27,8 @@ public:
              xr5::sim::Port::Ptr cmd_port)
       : memory_(base_addr, size) {
     data_port_ = std::move(data_port);
-    address_port_ = std::move(addr_port);
-    command_port_ = std::move(cmd_port);
+    addr_port_ = std::move(addr_port);
+    cmd_port_ = std::move(cmd_port);
   }
   virtual ~MemoryBase() = default;
 
@@ -73,7 +73,10 @@ public:
              MemoryBase *mem_obj)
         : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
 
-    void receive(const xr5::sim::Packet *packet) override {}
+    void receive(const xr5::sim::Packet *packet) override {
+      mem_obj_->data_packet_.word = packet->word;
+      mem_obj_->handleDataPacket();
+    }
 
   private:
     MemoryBase *mem_obj_;
@@ -85,7 +88,11 @@ public:
              MemoryBase *mem_obj)
         : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
 
-    void receive(const xr5::sim::Packet *packet) override {}
+    void receive(const xr5::sim::Packet *packet) override {
+      mem_obj_->addr_packet_.addr = packet->addr;
+      mem_obj_->addr_packet_.data.dram_addr = packet->data.dram_addr;
+      mem_obj_->handleAddrPacket();
+    }
 
   private:
     MemoryBase *mem_obj_;
@@ -97,16 +104,27 @@ public:
             MemoryBase *mem_obj)
         : xr5::sim::Port(name, id), mem_obj_(mem_obj) {}
 
-    void receive(const xr5::sim::Packet *packet) override {}
+    void receive(const xr5::sim::Packet *packet) override {
+      mem_obj_->cmd_packet_.data.dram_cmd = packet->data.dram_cmd;
+      mem_obj_->handleCmdPacket();
+    }
 
   private:
     MemoryBase *mem_obj_;
   };
 
+  virtual void handleDataPacket() {};
+  virtual void handleAddrPacket() {};
+  virtual void handleCmdPacket() {};
+
 protected:
-  xr5::sim::Port::Ptr address_port_ = nullptr;
-  xr5::sim::Port::Ptr command_port_ = nullptr;
+  xr5::sim::Port::Ptr addr_port_ = nullptr;
+  xr5::sim::Port::Ptr cmd_port_ = nullptr;
   xr5::sim::Port::Ptr data_port_ = nullptr;
+
+  xr5::sim::Packet data_packet_;
+  xr5::sim::Packet addr_packet_;
+  xr5::sim::Packet cmd_packet_;
 
 private:
   xr5::sim::Packet packet_;
