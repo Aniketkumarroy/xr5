@@ -4,6 +4,7 @@
 #include "xr5/utils/types.h"
 #include "xr5/utils/utils.h"
 #include <memory>
+#include <string_view>
 
 namespace xr5 {
 namespace sim {
@@ -54,7 +55,7 @@ public:
   // inline void run() { func_event_(sim_obj_); }
 
   virtual void run() = 0;
-  virtual std::string &getName() = 0;
+  virtual const std::string &getName() const noexcept = 0;
 
   Ptr next_ = nullptr;
   Ptr same_ = nullptr;

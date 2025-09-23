@@ -85,6 +85,7 @@ private:
   xr5::types::Scalar freq_scalar_;
   SrcClockDomain *src_clock_;
 
+  /** NOTE: src clock should be the only one to edit this params */
   friend SrcClockDomain;
 };
 } // namespace sim

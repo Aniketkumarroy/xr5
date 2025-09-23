@@ -19,7 +19,7 @@ public:
   template <typename T>
   inline void
   schedule(T *obj, void (T::*method)(), const xr5::types::Tick when,
-           const Event::Priority priority = Event::DefaultPriority) {
+           const Event::Priority priority = Event::kDefaultPriority) {
     Event::Ptr _event = xr5::utils::make_ptr<Event, MemberFuncEvent<T>>(
         obj, method, when, priority);
     ptr_event_queue_->insert(std::move(_event));
