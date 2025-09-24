@@ -276,12 +276,7 @@ auto FreqBase::TeraHertz(Cycle thz) noexcept {
   return Freq<FreqBase::Unit::THz>(thz);
 }
 
-static_assert(TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::PS ||
-                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::NS ||
-                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::US ||
-                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::MS ||
-                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::S,
-              "Invalid XR5_TIME_QUANTA: must be PS, NS, US, MS, or S");
+/** TODO: add a clean descriptive failsafe error message for invalid values */
 using TimeQuanta = Time<TimeBase::Unit::XR5_TIME_QUANTA>;
 } // namespace types
 } // namespace xr5

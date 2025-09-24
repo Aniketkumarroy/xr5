@@ -9,24 +9,22 @@ namespace utils {
 /**
  * @brief minimalistic class to propagate time passage as tick
  *
- * NOTE: currently here one tick corresponds to 1 picosecond
- * TODO: we can templatize the class to have one tick to any of
- * \c xr5::types::Time::Unit
  *
  */
+template <xr5::types::TimeBase::Unit U>
 class ClockTick {
 
 public:
-  ClockTick(xr5::types::Tick c = 0) : t_(xr5::types::Time::PicoSec(c)) {}
+  ClockTick(xr5::types::Tick c = 0) : t_(c) {}
 
-  xr5::types::Tick now() { return t_.picosec(); }
+  xr5::types::Tick now() { return t_.getRawTick(); }
 
-  const xr5::types::Time &getTime() { return t_; }
+  const xr5::types::Time<U> &getTime() { return t_; }
 
   void tick() { ++t_; }
 
 private:
-  xr5::types::Time t_;
+  xr5::types::Time<U> t_;
 };
 
 } // namespace utils
