@@ -108,7 +108,7 @@ public:
   static auto NanoSec(Tick ns) noexcept;
   static auto PicoSec(Tick ps) noexcept;
 
-  constexpr Tick getRawTick() const noexcept { return tick_; }
+  inline constexpr Tick getRawTick() const noexcept { return tick_; }
 
   TimeBase &operator++() noexcept {
     ++tick_;
@@ -120,7 +120,7 @@ public:
     return *this;
   }
 
-  TimeBase &operator+=(Tick tick) noexcept {
+  TimeBase &operator+=(const Tick tick) noexcept {
     tick_ = static_cast<Tick>(tick_ + tick);
     return *this;
   }
@@ -182,8 +182,12 @@ public:
   }
 
   // inline constexpr Freq<FreqBase::Unit::Hz> getFrequency() const noexcept;
-  constexpr Time<U> operator+(const Time<U> &other) const noexcept {
+  Time<U> operator+(const Time<U> &other) const noexcept {
     return Time<U>(tick_ + other.getRawTick());
+  }
+
+  Time<U> operator+(const Tick tick) const noexcept {
+    return Time<U>(tick_ + tick);
   }
 
   Time<U> &operator+=(const Time<U> &other) noexcept {
@@ -195,11 +199,11 @@ public:
     return Time<U>(static_cast<uint64_t>(tick_ * multiplier));
   }
 
-  constexpr bool operator<(const Time<U> &other) const noexcept {
+  bool operator<(const Time<U> &other) const noexcept {
     return tick_ < other.tick_;
   }
 
-  constexpr bool operator==(const Time<U> &other) const noexcept {
+  bool operator==(const Time<U> &other) const noexcept {
     return tick_ == other.tick_;
   }
 };
@@ -258,11 +262,11 @@ public:
     return *this;
   }
 
-  constexpr bool operator<(const Freq<U> &other) const noexcept {
+  bool operator<(const Freq<U> &other) const noexcept {
     return cycles_ < other.cycles_;
   }
 
-  constexpr bool operator==(const Freq<U> &other) const noexcept {
+  bool operator==(const Freq<U> &other) const noexcept {
     return cycles_ == other.cycles_;
   }
 };
