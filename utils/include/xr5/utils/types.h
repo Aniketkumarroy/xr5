@@ -80,8 +80,7 @@ private:
   uint64_t bytes_;
 };
 
-class Freq; // forward declaration
-class Time {
+class TimeBase {
 public:
   enum class Unit : Tick {
     PS = 1ULL,
@@ -91,74 +90,32 @@ public:
     S = 1000ULL * MS
   };
 
-  constexpr Time() : picoseconds_(0) {}
-  constexpr Time(Tick value, Unit unit)
-      : picoseconds_(value * static_cast<uint64_t>(unit)) {}
+  constexpr TimeBase() : tick_(0) {}
+  constexpr TimeBase(Tick time) : tick_(time) {}
 
-  static constexpr Time Sec(uint64_t s) noexcept { return Time(s, Unit::S); }
-  static constexpr Time MiliSec(uint64_t ms) noexcept {
-    return Time(ms, Unit::MS);
-  }
-  static constexpr Time MicroSec(uint64_t us) noexcept {
-    return Time(us, Unit::US);
-  }
-  static constexpr Time NanoSec(uint64_t ns) noexcept {
-    return Time(ns, Unit::NS);
-  }
-  static constexpr Time PicoSec(uint64_t ps) noexcept {
-    return Time(ps, Unit::PS);
-  }
+  static auto Sec(const Tick s) noexcept;
+  static auto MiliSec(uint64_t ms) noexcept;
+  static auto MicroSec(uint64_t us) noexcept;
+  static auto NanoSec(uint64_t ns) noexcept;
+  static auto PicoSec(uint64_t ps) noexcept;
 
-  inline constexpr Tick picosec() const noexcept { return picoseconds_; }
+  constexpr Tick getRawTick() const noexcept { return tick_; }
 
-  inline constexpr Scalar as(Unit unit) const noexcept {
-    return static_cast<Scalar>(picoseconds_) / static_cast<Scalar>(unit);
-  }
-
-  inline constexpr Scalar getFreqInHertz() const noexcept {
-    if (picoseconds_ != 0)
-      return static_cast<Scalar>(Unit::S) / static_cast<Scalar>(picoseconds_);
-    return 0.0;
-  }
-
-  inline constexpr Freq getFrequency() const noexcept;
-
-  constexpr Time operator+(const Time &other) const noexcept {
-    return Time::PicoSec(picoseconds_ + other.picoseconds_);
-  }
-
-  Time &operator+=(const Time &other) noexcept {
-    picoseconds_ += other.picoseconds_;
+  TimeBase &operator++() noexcept {
+    ++tick_;
     return *this;
   }
 
-  Time &operator++() noexcept {
-    ++picoseconds_;
+  TimeBase &operator*=(Scalar multiplier) noexcept {
+    tick_ = static_cast<uint64_t>(tick_ * multiplier);
     return *this;
   }
 
-  Time operator*(Scalar multiplier) const noexcept {
-    return Time::PicoSec(static_cast<uint64_t>(picoseconds_ * multiplier));
-  }
-
-  Time &operator*=(Scalar multiplier) noexcept {
-    picoseconds_ = static_cast<uint64_t>(picoseconds_ * multiplier);
-    return *this;
-  }
-
-  constexpr bool operator<(const Time &other) const noexcept {
-    return picoseconds_ < other.picoseconds_;
-  }
-
-  constexpr bool operator==(const Time &other) const noexcept {
-    return picoseconds_ == other.picoseconds_;
-  }
-
-private:
-  Tick picoseconds_;
+protected:
+  Tick tick_;
 };
 
-class Freq {
+class FreqBase {
 public:
   enum class Unit : uint64_t {
     Hz = 1ULL,
@@ -168,77 +125,146 @@ public:
     THz = 1000ULL * GHz
   };
 
-  constexpr Freq() : cycles_in_hz_(0) {}
-  constexpr Freq(Cycle value, Unit unit) noexcept
-      : cycles_in_hz_(value * static_cast<uint64_t>(unit)) {}
+  constexpr FreqBase() : cycles_(0) {}
+  constexpr FreqBase(Cycle value) noexcept : cycles_(value) {}
 
-  static constexpr Freq Hertz(Cycle hz) noexcept { return Freq(hz, Unit::Hz); }
-  static constexpr Freq KiloHertz(Cycle khz) noexcept {
-    return Freq(khz, Unit::KHz);
-  }
-  static constexpr Freq MegaHertz(Cycle mhz) noexcept {
-    return Freq(mhz, Unit::MHz);
-  }
-  static constexpr Freq GigaHertz(Cycle ghz) noexcept {
-    return Freq(ghz, Unit::GHz);
-  }
-  static constexpr Freq TeraHertz(Cycle thz) noexcept {
-    return Freq(thz, Unit::THz);
+  static auto Hertz(Cycle hz) noexcept;
+  static auto KiloHertz(Cycle khz) noexcept;
+  static auto MegaHertz(Cycle mhz) noexcept;
+  static auto GigaHertz(Cycle ghz) noexcept;
+  static auto TeraHertz(Cycle thz) noexcept;
+
+  inline constexpr Cycle getRawCycles() const noexcept { return cycles_; }
+
+  FreqBase &operator*=(Scalar multiplier) noexcept {
+    cycles_ = static_cast<Cycle>(cycles_ * multiplier);
+    return *this;
   }
 
-  inline constexpr Cycle hertz() const noexcept { return cycles_in_hz_; }
+protected:
+  Cycle cycles_;
+};
 
-  inline constexpr Scalar as(Unit unit) const noexcept {
-    return static_cast<Scalar>(cycles_in_hz_) / static_cast<Scalar>(unit);
+template <FreqBase::Unit U> class Freq; // forward declaration
+template <TimeBase::Unit U> class Time : public TimeBase {
+public:
+  constexpr Time() : TimeBase(0) {}
+  constexpr Time(Tick time) : TimeBase(time) {}
+
+  inline constexpr Tick picosec() const noexcept {
+    return tick_ * static_cast<Tick>(U);
   }
 
-  inline constexpr Scalar getPeriodInSec() const noexcept {
-    if (cycles_in_hz_ != 0)
-      return 1.0 / static_cast<Scalar>(cycles_in_hz_);
+  inline constexpr Scalar as(TimeBase::Unit unit) const noexcept {
+    return static_cast<Scalar>(tick_) *
+           (static_cast<Scalar>(U) / static_cast<Scalar>(unit));
+  }
+
+  inline constexpr Scalar getFreqInHertz() const noexcept {
+    if (tick_ != 0)
+      return static_cast<Scalar>(TimeBase::Unit::S) /
+             static_cast<Scalar>(picosec());
     return 0.0;
   }
 
-  inline constexpr Time getPeriod() const noexcept;
-
-  constexpr Freq operator+(const Freq &other) const noexcept {
-    return Freq::Hertz(cycles_in_hz_ + other.cycles_in_hz_);
+  // inline constexpr Freq<FreqBase::Unit::Hz> getFrequency() const noexcept;
+  constexpr Time<U> operator+(const Time<U> &other) const noexcept {
+    return Time<U>(tick_ + other.getRawTick());
   }
 
-  Freq &operator+=(const Freq &other) noexcept {
-    cycles_in_hz_ += other.cycles_in_hz_;
+  Time<U> &operator+=(const Time<U> &other) noexcept {
+    tick_ += other.tick_;
+    return *this;
+  }
+
+  Time<U> operator*(Scalar multiplier) const noexcept {
+    return Time<U>(static_cast<uint64_t>(tick_ * multiplier));
+  }
+
+  constexpr bool operator<(const Time<U> &other) const noexcept {
+    return tick_ < other.tick_;
+  }
+
+  constexpr bool operator==(const Time<U> &other) const noexcept {
+    return tick_ == other.tick_;
+  }
+};
+
+auto TimeBase::Sec(const Tick s) noexcept { return Time<TimeBase::Unit::S>(s); }
+auto TimeBase::MiliSec(const Tick ms) noexcept {
+  return Time<TimeBase::Unit::MS>(ms);
+}
+auto TimeBase::MicroSec(const Tick us) noexcept {
+  return Time<TimeBase::Unit::US>(us);
+}
+auto TimeBase::NanoSec(const Tick ns) noexcept {
+  return Time<TimeBase::Unit::NS>(ns);
+}
+auto TimeBase::PicoSec(const Tick ps) noexcept {
+  return Time<TimeBase::Unit::PS>(ps);
+}
+
+template <FreqBase::Unit U> class Freq : public FreqBase {
+public:
+  constexpr Freq() : FreqBase(0) {}
+  constexpr Freq(Cycle value) noexcept : FreqBase(value) {}
+
+  inline constexpr Scalar as(Unit unit) const noexcept {
+    return static_cast<Scalar>(cycles_) *
+           (static_cast<Scalar>(U) / static_cast<Scalar>(unit));
+  }
+
+  inline constexpr Cycle hertz() const noexcept {
+    return cycles_ * static_cast<Cycle>(U);
+  }
+
+  inline constexpr Scalar getPeriodInSec() const noexcept {
+    if (cycles_ != 0)
+      return 1.0 / static_cast<Scalar>(hertz());
+    return 0.0;
+  }
+
+  // inline constexpr Time<TimeBase::Unit::S> getPeriod() const noexcept;
+
+  constexpr Freq<U> operator+(const Freq<U> &other) const noexcept {
+    return FreqBase::Hertz(cycles_ + other.cycles_);
+  }
+
+  Freq<U> &operator+=(const Freq<U> &other) noexcept {
+    cycles_ += other.cycles_;
     return *this;
   }
 
   Freq operator*(Scalar multiplier) const noexcept {
-    return Freq::Hertz(static_cast<Cycle>(cycles_in_hz_ * multiplier));
+    return FreqBase::Hertz(static_cast<Cycle>(cycles_ * multiplier));
   }
 
-  Freq &operator*=(Scalar multiplier) noexcept {
-    cycles_in_hz_ = static_cast<Cycle>(cycles_in_hz_ * multiplier);
+  Freq<U> &operator*=(Scalar multiplier) noexcept {
+    cycles_ = static_cast<Cycle>(cycles_ * multiplier);
     return *this;
   }
 
-  constexpr bool operator<(const Freq &other) const noexcept {
-    return cycles_in_hz_ < other.cycles_in_hz_;
+  constexpr bool operator<(const Freq<U> &other) const noexcept {
+    return cycles_ < other.cycles_;
   }
 
-  constexpr bool operator==(const Freq &other) const noexcept {
-    return cycles_in_hz_ == other.cycles_in_hz_;
+  constexpr bool operator==(const Freq<U> &other) const noexcept {
+    return cycles_ == other.cycles_;
   }
-
-private:
-  Cycle cycles_in_hz_;
 };
 
-/** NOTE: unable to define this function inside Time class since compiler
- * complains about not finding Freq::Hertz */
-inline constexpr Freq Time::getFrequency() const noexcept {
-  return Freq::Hertz(static_cast<Cycle>(getFreqInHertz()));
+auto FreqBase::Hertz(Cycle hz) noexcept { return Freq<FreqBase::Unit::Hz>(hz); }
+auto FreqBase::KiloHertz(Cycle khz) noexcept {
+  return Freq<FreqBase::Unit::KHz>(khz);
 }
-
-inline constexpr Time Freq::getPeriod() const noexcept {
-  return Time::PicoSec(static_cast<Tick>(static_cast<Scalar>(Unit::THz) /
-                                         static_cast<Scalar>(cycles_in_hz_)));
+auto FreqBase::MegaHertz(Cycle mhz) noexcept {
+  return Freq<FreqBase::Unit::MHz>(mhz);
+}
+auto FreqBase::GigaHertz(Cycle ghz) noexcept {
+  return Freq<FreqBase::Unit::GHz>(ghz);
+}
+auto FreqBase::TeraHertz(Cycle thz) noexcept {
+  return Freq<FreqBase::Unit::THz>(thz);
 }
 
 struct DramAddr {
@@ -248,10 +274,7 @@ struct DramAddr {
   bool isRead; // DRAM read/write command
 };
 
-enum class DramCmd : uint8_t {
-  ACTIVATE,
-  PRECHARGE
-};
+enum class DramCmd : uint8_t { ACTIVATE, PRECHARGE };
 } // namespace types
 } // namespace xr5
 
