@@ -8,22 +8,28 @@ namespace memory {
  * multiplexed into one */
 
 /** TODO: replace nullptr with proper event queue pointer for SimObject */
-MemoryObject::MemoryObject() : SimObject(nullptr) {
-  data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
-      "data_port", xr5::sim::Port::getNewId(), this);
-  addr_port_ = xr5::utils::make_ptr<xr5::sim::Port, AddrPort>(
-      "address_port", xr5::sim::Port::getNewId(), this);
-  cmd_port_ = xr5::utils::make_ptr<xr5::sim::Port, CmdPort>(
-      "command_port", xr5::sim::Port::getNewId(), this);
-}
-/** TODO: replace nullptr with proper event queue pointer for SimObject */
-MemoryObject::MemoryObject(xr5::sim::Port::Ptr data_port,
-                           xr5::sim::Port::Ptr addr_port,
-                           xr5::sim::Port::Ptr cmd_port)
-    : SimObject(nullptr) {
-  data_port_ = std::move(data_port);
-  addr_port_ = std::move(addr_port);
-  cmd_port_ = std::move(cmd_port);
+MemoryObject::MemoryObject(const MemoryObject::Params &params)
+    : SimObject(nullptr), data_receive_delay_(params.data_receive_delay),
+      addr_receive_delay_(params.addr_receive_delay),
+      cmd_receive_delay_(params.cmd_receive_delay), clock_(params.clock) {
+  if (params.data_port == nullptr) {
+    data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
+        "data_port", xr5::sim::Port::getNewId(), this);
+  } else {
+    data_port_ = std::move(params.data_port);
+  }
+  if (params.addr_port == nullptr) {
+    addr_port_ = xr5::utils::make_ptr<xr5::sim::Port, AddrPort>(
+        "address_port", xr5::sim::Port::getNewId(), this);
+  } else {
+    addr_port_ = std::move(params.addr_port);
+  }
+  if (params.cmd_port == nullptr) {
+    cmd_port_ = xr5::utils::make_ptr<xr5::sim::Port, CmdPort>(
+        "command_port", xr5::sim::Port::getNewId(), this);
+  } else {
+    cmd_port_ = std::move(params.cmd_port);
+  }
 }
 
 xr5::sim::Port *MemoryObject::getPort(const std::string &name) {

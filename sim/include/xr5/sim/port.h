@@ -51,7 +51,12 @@ class Port {
 
 public:
   using Id = int16_t;
-  using Ptr = std::unique_ptr<Port>;
+  /** DISCUSS: although I always suggest to use unique_ptr for safety with speed
+   * and also to comply the usual convention of the codebase, here simply we
+   * can't use a unique_ptr because we may need to multiplex ports(example: a
+   * same port object is both used by addr port and data port). so a single port
+   * object in heap may be referenced by more than 1 Port::Ptr */
+  using Ptr = std::shared_ptr<Port>;
   static constexpr Id kInvalidId = int16_t(-1);
 
   /** DISCUSS: should we steal the resource of the caller(name_ =

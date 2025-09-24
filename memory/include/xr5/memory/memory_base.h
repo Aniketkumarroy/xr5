@@ -1,6 +1,7 @@
 #ifndef MEMORY_BASE_H_
 #define MEMORY_BASE_H_
 #include "xr5/memory_config.h"
+#include "xr5/sim/clock_domain.h"
 #include "xr5/sim/port.h"
 #include "xr5/sim/sim_object.h"
 #include "xr5/utils/utils.h"
@@ -13,10 +14,20 @@ namespace memory {
 
 class MemoryObject : public xr5::sim::SimObject {
 public:
-  MemoryObject();
+  struct Params {
+  public:
+    xr5::sim::ClockDomain *clock = nullptr;
 
-  MemoryObject(xr5::sim::Port::Ptr data_port, xr5::sim::Port::Ptr addr_port,
-               xr5::sim::Port::Ptr cmd_port);
+    xr5::sim::Port::Ptr data_port = nullptr;
+    xr5::sim::Port::Ptr addr_port = nullptr;
+    xr5::sim::Port::Ptr cmd_port = nullptr;
+
+    xr5::types::TimeQuanta data_receive_delay = xr5::types::TimeQuanta(0);
+    xr5::types::TimeQuanta addr_receive_delay = xr5::types::TimeQuanta(0);
+    xr5::types::TimeQuanta cmd_receive_delay = xr5::types::TimeQuanta(0);
+  };
+
+  MemoryObject(const MemoryObject::Params &params);
 
   virtual ~MemoryObject() = default;
 
@@ -87,21 +98,26 @@ public:
     MemoryObject *mem_obj_;
   };
 
-  virtual void handleDataPacket(){};
-  virtual void handleAddrPacket(){};
-  virtual void handleCmdPacket(){};
+  virtual void handleDataPacket() {};
+  virtual void handleAddrPacket() {};
+  virtual void handleCmdPacket() {};
 
   xr5::sim::Packet data_packet_;
   xr5::sim::Packet addr_packet_;
   xr5::sim::Packet cmd_packet_;
 
-protected:
+private:
+  xr5::sim::ClockDomain *clock_ = nullptr;
+
+  xr5::sim::Packet packet_;
+
   xr5::sim::Port::Ptr addr_port_ = nullptr;
   xr5::sim::Port::Ptr cmd_port_ = nullptr;
   xr5::sim::Port::Ptr data_port_ = nullptr;
 
-private:
-  xr5::sim::Packet packet_;
+  xr5::types::TimeQuanta data_receive_delay_;
+  xr5::types::TimeQuanta addr_receive_delay_;
+  xr5::types::TimeQuanta cmd_receive_delay_;
 };
 
 template <typename Data,
@@ -110,15 +126,9 @@ class MemoryBase : public MemoryObject {
 public:
   MemoryBase() = delete;
 
-  MemoryBase(const xr5::types::Address base_addr, const size_t size)
-      : memory_(base_addr, size) {}
-
   MemoryBase(const xr5::types::Address base_addr, const size_t size,
-             xr5::sim::Port::Ptr data_port, xr5::sim::Port::Ptr addr_port,
-             xr5::sim::Port::Ptr cmd_port)
-      : MemoryObject(std::move(data_port), std::move(addr_port),
-                     std::move(cmd_port)),
-        memory_(base_addr, size) {}
+             const MemoryObject::Params &params)
+      : MemoryObject(params), memory_(base_addr, size) {}
 
   virtual ~MemoryBase() = default;
 
