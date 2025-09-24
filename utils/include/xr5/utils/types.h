@@ -30,6 +30,15 @@ using Address = Address32;
 using Word = Address;
 constexpr uint64_t WordSize = sizeof(Address);
 
+struct DramAddr {
+  uint64_t bank;
+  uint64_t row;
+  uint64_t col;
+  bool isRead; // DRAM read/write command
+};
+
+enum class DramCmd : uint8_t { ACTIVATE, PRECHARGE };
+
 class Size {
 public:
   enum class Unit : uint64_t {
@@ -267,14 +276,13 @@ auto FreqBase::TeraHertz(Cycle thz) noexcept {
   return Freq<FreqBase::Unit::THz>(thz);
 }
 
-struct DramAddr {
-  uint64_t bank;
-  uint64_t row;
-  uint64_t col;
-  bool isRead; // DRAM read/write command
-};
-
-enum class DramCmd : uint8_t { ACTIVATE, PRECHARGE };
+static_assert(TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::PS ||
+                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::NS ||
+                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::US ||
+                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::MS ||
+                  TimeBase::Unit::XR5_TIME_QUANTA == TimeBase::Unit::S,
+              "Invalid XR5_TIME_QUANTA: must be PS, NS, US, MS, or S");
+using TimeQuanta = Time<TimeBase::Unit::XR5_TIME_QUANTA>;
 } // namespace types
 } // namespace xr5
 
