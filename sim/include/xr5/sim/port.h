@@ -34,6 +34,8 @@ struct Packet {
       int state; // e.g., MESI state
     } coherence;
 
+    /** DISCUSS: instead of dram_addr or dram_cmd should it be mem_addr and
+     * mem_cmd for generality? */
     xr5::types::DramAddr dram_addr;
 
     xr5::types::DramCmd dram_cmd;

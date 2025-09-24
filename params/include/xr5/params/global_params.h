@@ -54,7 +54,7 @@ public:
    * TODO: instead of hardcoding the unit to picosec, make it flexible to be
    * auto adjust according to simulator's simulated time granularity
    */
-  inline const xr5::types::Tick getDramDataReceiveDelayInPicoSec() const {
+  inline xr5::types::Tick getDramDataReceiveDelayInPicoSec() const {
     return dram_data_receive_delay_.picosec();
   }
 
@@ -62,7 +62,7 @@ public:
     return dram_data_receive_delay_;
   }
 
-  inline const xr5::types::Tick getDramAddrReceiveDelayInPicoSec() const {
+  inline xr5::types::Tick getDramAddrReceiveDelayInPicoSec() const {
     return dram_addr_receive_delay_.picosec();
   }
 
@@ -70,7 +70,7 @@ public:
     return dram_addr_receive_delay_;
   }
 
-  inline const xr5::types::Tick getDramCmdReceiveDelayInPicoSec() const {
+  inline xr5::types::Tick getDramCmdReceiveDelayInPicoSec() const {
     return dram_cmd_receive_delay_.picosec();
   }
 
