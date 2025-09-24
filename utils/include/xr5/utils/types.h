@@ -103,10 +103,10 @@ public:
   constexpr TimeBase(Tick time) : tick_(time) {}
 
   static auto Sec(const Tick s) noexcept;
-  static auto MiliSec(uint64_t ms) noexcept;
-  static auto MicroSec(uint64_t us) noexcept;
-  static auto NanoSec(uint64_t ns) noexcept;
-  static auto PicoSec(uint64_t ps) noexcept;
+  static auto MiliSec(Tick ms) noexcept;
+  static auto MicroSec(Tick us) noexcept;
+  static auto NanoSec(Tick ns) noexcept;
+  static auto PicoSec(Tick ps) noexcept;
 
   constexpr Tick getRawTick() const noexcept { return tick_; }
 
@@ -116,7 +116,12 @@ public:
   }
 
   TimeBase &operator*=(Scalar multiplier) noexcept {
-    tick_ = static_cast<uint64_t>(tick_ * multiplier);
+    tick_ = static_cast<Tick>(tick_ * multiplier);
+    return *this;
+  }
+
+  TimeBase &operator+=(Tick tick) noexcept {
+    tick_ = static_cast<Tick>(tick_ + tick);
     return *this;
   }
 
