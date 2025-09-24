@@ -32,9 +32,11 @@ public:
   virtual ~MemoryObject() = default;
 
   inline void sendWord(xr5::types::Word word) {
-    packet_.word = word;
-    packet_.type = xr5::sim::Packet::Type::WORD;
-    data_port_->send(&packet_);
+    /** TODO: make it multithreading compatible. currently if multiple threads
+     * use sendWord, packet_to_send_ may get corrupted */
+    packet_to_send_.word = word;
+    packet_to_send_.type = xr5::sim::Packet::Type::WORD;
+    data_port_->send(&packet_to_send_);
   }
 
   /**
@@ -109,7 +111,7 @@ public:
 private:
   xr5::sim::ClockDomain *clock_ = nullptr;
 
-  xr5::sim::Packet packet_;
+  xr5::sim::Packet packet_to_send_;
 
   xr5::sim::Port::Ptr addr_port_ = nullptr;
   xr5::sim::Port::Ptr cmd_port_ = nullptr;

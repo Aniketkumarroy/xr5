@@ -51,7 +51,7 @@ class Port {
 
 public:
   using Id = int16_t;
-  /** DISCUSS: although I always suggest to use unique_ptr for safety with speed
+  /** NOTE: although I always suggest to use unique_ptr for safety with speed
    * and also to comply the usual convention of the codebase, here simply we
    * can't use a unique_ptr because we may need to multiplex ports(example: a
    * same port object is both used by addr port and data port). so a single port
