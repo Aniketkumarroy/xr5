@@ -17,11 +17,11 @@ class ClockTick {
 public:
   ClockTick(xr5::types::Tick c = 0) : t_(c) {}
 
-  xr5::types::Tick now() { return t_.getRawTick(); }
+  inline xr5::types::Tick now() { return t_.getRawTick(); }
 
-  const xr5::types::Time<U> &getTime() { return t_; }
+  inline const xr5::types::Time<U> &getTime() { return t_; }
 
-  void tick() { ++t_; }
+  inline void tick() { ++t_; }
 
 private:
   xr5::types::Time<U> t_;
