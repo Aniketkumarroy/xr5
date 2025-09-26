@@ -102,11 +102,11 @@ public:
   constexpr TimeBase() : tick_(0) {}
   constexpr TimeBase(Tick time) : tick_(time) {}
 
-  static auto Sec(const Tick s) noexcept;
-  static auto MiliSec(Tick ms) noexcept;
-  static auto MicroSec(Tick us) noexcept;
-  static auto NanoSec(Tick ns) noexcept;
-  static auto PicoSec(Tick ps) noexcept;
+  static inline auto Sec(const Tick s) noexcept;
+  static inline auto MiliSec(Tick ms) noexcept;
+  static inline auto MicroSec(Tick us) noexcept;
+  static inline auto NanoSec(Tick ns) noexcept;
+  static inline auto PicoSec(Tick ps) noexcept;
 
   inline constexpr Tick getRawTick() const noexcept { return tick_; }
 
@@ -142,11 +142,11 @@ public:
   constexpr FreqBase() : cycles_(0) {}
   constexpr FreqBase(Cycle value) noexcept : cycles_(value) {}
 
-  static auto Hertz(Cycle hz) noexcept;
-  static auto KiloHertz(Cycle khz) noexcept;
-  static auto MegaHertz(Cycle mhz) noexcept;
-  static auto GigaHertz(Cycle ghz) noexcept;
-  static auto TeraHertz(Cycle thz) noexcept;
+  static inline auto Hertz(Cycle hz) noexcept;
+  static inline auto KiloHertz(Cycle khz) noexcept;
+  static inline auto MegaHertz(Cycle mhz) noexcept;
+  static inline auto GigaHertz(Cycle ghz) noexcept;
+  static inline auto TeraHertz(Cycle thz) noexcept;
 
   inline constexpr Cycle getRawCycles() const noexcept { return cycles_; }
 
@@ -181,6 +181,8 @@ public:
     return 0.0;
   }
 
+  constexpr static TimeBase::Unit getUnit() { return U; }
+
   // inline constexpr Freq<FreqBase::Unit::Hz> getFrequency() const noexcept;
   Time<U> operator+(const Time<U> &other) const noexcept {
     return Time<U>(tick_ + other.getRawTick());
@@ -208,17 +210,19 @@ public:
   }
 };
 
-auto TimeBase::Sec(const Tick s) noexcept { return Time<TimeBase::Unit::S>(s); }
-auto TimeBase::MiliSec(const Tick ms) noexcept {
+inline auto TimeBase::Sec(const Tick s) noexcept {
+  return Time<TimeBase::Unit::S>(s);
+}
+inline auto TimeBase::MiliSec(const Tick ms) noexcept {
   return Time<TimeBase::Unit::MS>(ms);
 }
-auto TimeBase::MicroSec(const Tick us) noexcept {
+inline auto TimeBase::MicroSec(const Tick us) noexcept {
   return Time<TimeBase::Unit::US>(us);
 }
-auto TimeBase::NanoSec(const Tick ns) noexcept {
+inline auto TimeBase::NanoSec(const Tick ns) noexcept {
   return Time<TimeBase::Unit::NS>(ns);
 }
-auto TimeBase::PicoSec(const Tick ps) noexcept {
+inline auto TimeBase::PicoSec(const Tick ps) noexcept {
   return Time<TimeBase::Unit::PS>(ps);
 }
 
@@ -242,9 +246,11 @@ public:
     return 0.0;
   }
 
+  constexpr static FreqBase::Unit getUnit() { return U; }
+
   // inline constexpr Time<TimeBase::Unit::S> getPeriod() const noexcept;
 
-  constexpr Freq<U> operator+(const Freq<U> &other) const noexcept {
+  Freq<U> operator+(const Freq<U> &other) const noexcept {
     return FreqBase::Hertz(cycles_ + other.cycles_);
   }
 
@@ -271,17 +277,19 @@ public:
   }
 };
 
-auto FreqBase::Hertz(Cycle hz) noexcept { return Freq<FreqBase::Unit::Hz>(hz); }
-auto FreqBase::KiloHertz(Cycle khz) noexcept {
+inline auto FreqBase::Hertz(Cycle hz) noexcept {
+  return Freq<FreqBase::Unit::Hz>(hz);
+}
+inline auto FreqBase::KiloHertz(Cycle khz) noexcept {
   return Freq<FreqBase::Unit::KHz>(khz);
 }
-auto FreqBase::MegaHertz(Cycle mhz) noexcept {
+inline auto FreqBase::MegaHertz(Cycle mhz) noexcept {
   return Freq<FreqBase::Unit::MHz>(mhz);
 }
-auto FreqBase::GigaHertz(Cycle ghz) noexcept {
+inline auto FreqBase::GigaHertz(Cycle ghz) noexcept {
   return Freq<FreqBase::Unit::GHz>(ghz);
 }
-auto FreqBase::TeraHertz(Cycle thz) noexcept {
+inline auto FreqBase::TeraHertz(Cycle thz) noexcept {
   return Freq<FreqBase::Unit::THz>(thz);
 }
 
