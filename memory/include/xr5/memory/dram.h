@@ -18,9 +18,9 @@ class Dram : public MemoryBase<xr5::types::Address> {
 
 public:
   Dram() = delete;
-  Dram(const DramParams &params)
-      : MemoryBase<xr5::types::Address>(0, params.capacity.bytes() /
-                                               xr5::types::WordSize),
+  Dram(const DramParams &params, const MemoryObject::Params mem_param)
+      : MemoryBase<xr5::types::Address>(
+            0, params.capacity.bytes() / xr5::types::WordSize, mem_param),
         params_(params) {
     assert(params_.io_width_of_chip * params_.no_of_chips_per_rank ==
            xr5::types::WordSize * 8);
