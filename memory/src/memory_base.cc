@@ -10,9 +10,10 @@ namespace memory {
 
 /** TODO: replace nullptr with proper event queue pointer for SimObject */
 MemoryObject::MemoryObject(const MemoryObject::Params &params)
-    : SimObject(nullptr), data_receive_delay_(params.data_receive_delay),
+    : SimObject(nullptr), clock_(params.clock),
+      data_receive_delay_(params.data_receive_delay),
       addr_receive_delay_(params.addr_receive_delay),
-      cmd_receive_delay_(params.cmd_receive_delay), clock_(params.clock) {
+      cmd_receive_delay_(params.cmd_receive_delay) {
   if (params.data_port == nullptr) {
     data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
         "data_port", xr5::sim::Port::getNewId(), this);
@@ -33,7 +34,7 @@ MemoryObject::MemoryObject(const MemoryObject::Params &params)
   }
 }
 
-xr5::sim::Port *MemoryObject::getPort(const std::string &name) {
+xr5::sim::Port *MemoryObject::getPort(const std::string &name) const {
   if (name == data_port_->getName())
     return getDataPort();
   else if (name == addr_port_->getName())
@@ -44,7 +45,7 @@ xr5::sim::Port *MemoryObject::getPort(const std::string &name) {
     return nullptr;
 }
 
-xr5::sim::Port *MemoryObject::getPort(const xr5::sim::Port::Id id) {
+xr5::sim::Port *MemoryObject::getPort(const xr5::sim::Port::Id id) const {
   if (id == data_port_->getId())
     return getDataPort();
   else if (id == addr_port_->getId())

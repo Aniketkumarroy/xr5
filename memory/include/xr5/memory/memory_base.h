@@ -48,19 +48,20 @@ public:
    *
    * @return xr5::sim::Port* to the data_port_
    */
-  inline xr5::sim::Port *getDataPort() {
+  inline xr5::sim::Port *getDataPort() const {
     return xr5::utils::get_raw_ptr<xr5::sim::Port>(data_port_);
   }
 
-  inline xr5::sim::Port *getCmdPort() {
+  inline xr5::sim::Port *getCmdPort() const {
     return xr5::utils::get_raw_ptr<xr5::sim::Port>(cmd_port_);
   }
 
-  inline xr5::sim::Port *getAddrPort() {
+  inline xr5::sim::Port *getAddrPort() const {
     return xr5::utils::get_raw_ptr<xr5::sim::Port>(addr_port_);
   }
 
-  xr5::sim::Port *getPort(const std::string &name);
+  xr5::sim::Port *getPort(const std::string &name) const;
+  xr5::sim::Port *getPort(const xr5::sim::Port::Id id) const;
 
   xr5::sim::Port *getPort(std::string &name,
                           xr5::sim::Port::Id &idx) const override;
