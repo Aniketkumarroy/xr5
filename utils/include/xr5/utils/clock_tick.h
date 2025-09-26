@@ -21,7 +21,8 @@ public:
 
   inline const xr5::types::Time<U> &getTime() { return t_; }
 
-  inline void tick() { ++t_; }
+  inline void inc() { ++t_; }
+  inline void increment(const xr5::types::Tick tick) { t_ += tick; }
 
 private:
   xr5::types::Time<U> t_;
