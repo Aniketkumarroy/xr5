@@ -4,18 +4,16 @@ namespace xr5 {
 namespace sim {
 
 void ClockDomain::setPeriodAndFrequency(
-    const xr5::types::Time &period) noexcept {
+    const xr5::types::TimePS &period) noexcept {
   period_ = period;
-  time_in_picosec_ = period_.picosec();
-  freq_ = period_.getFrequency();
-  freq_in_hertz_ = period_.getFreqInHertz();
+  freq_ = static_cast<xr5::types::Cycle>(period_.getFreqInHertz());
 }
 
-void ClockDomain::setPeriodAndFrequency(const xr5::types::Freq &freq) noexcept {
+void ClockDomain::setPeriodAndFrequency(
+    const xr5::types::FreqHz &freq) noexcept {
   freq_ = freq;
-  freq_in_hertz_ = freq_.hertz();
-  period_ = freq_.getPeriod();
-  time_in_picosec_ = period_.picosec();
+  period_ = static_cast<xr5::types::Tick>(
+      freq_.getPeriod(xr5::types::TimeBase::Unit::PS));
 }
 
 SrcClockDomain::~SrcClockDomain() {

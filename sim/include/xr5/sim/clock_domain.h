@@ -13,40 +13,39 @@ public:
   ClockDomain() = default;
   ~ClockDomain() = default;
 
-  inline const xr5::types::Time &getPeriod() const noexcept { return period_; }
+  inline const xr5::types::TimePS &getPeriod() const noexcept {
+    return period_;
+  }
   inline xr5::types::Tick getPeriodInPicoSec() const noexcept {
-    return time_in_picosec_;
+    /** DISCUSS: since period_ unit is already in picosec we can use a cheap
+     * getter */
+    return period_.getRawTick();
   }
 
-  inline const xr5::types::Freq &getFrequency() const noexcept { return freq_; }
+  inline const xr5::types::FreqHz &getFrequency() const noexcept { return freq_; }
   inline xr5::types::Cycle getFrequencyInHertz() const noexcept {
-    return freq_in_hertz_;
+    /** DISCUSS: since freq_ unit is already in Hertz we can use a cheap getter
+     */
+    return freq_.getRawCycles();
   }
 
-  void setPeriodAndFrequency(const xr5::types::Time &period) noexcept;
+  void setPeriodAndFrequency(const xr5::types::TimePS &period) noexcept;
 
-  void setPeriodAndFrequency(const xr5::types::Freq &freq) noexcept;
+  void setPeriodAndFrequency(const xr5::types::FreqHz &freq) noexcept;
 
 protected:
-  xr5::types::Freq freq_;
-  xr5::types::Time period_;
-
-  /** DISCUSS: since \c xr5::types::Time and \c xr5::types::Freq already have
-   * inline function to get time and hertz so is it good to store this variables
-   * explicitly
-   */
-  xr5::types::Tick time_in_picosec_;
-  xr5::types::Cycle freq_in_hertz_;
+  xr5::types::FreqHz freq_;
+  xr5::types::TimePS period_;
 };
 
 class DerivedClockDomain; // forward declaration
 class SrcClockDomain : public ClockDomain {
 public:
   SrcClockDomain() = delete;
-  SrcClockDomain(const xr5::types::Time &period) noexcept {
+  SrcClockDomain(const xr5::types::TimePS &period) noexcept {
     setPeriodAndFrequency(period);
   }
-  SrcClockDomain(const xr5::types::Freq &freq) noexcept {
+  SrcClockDomain(const xr5::types::FreqHz &freq) noexcept {
     setPeriodAndFrequency(freq);
   }
   ~SrcClockDomain();
