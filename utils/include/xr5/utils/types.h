@@ -175,9 +175,14 @@ public:
   }
 
   inline constexpr Scalar getFreqInHertz() const noexcept {
+    return getFreq(FreqBase::Unit::Hz);
+  }
+
+  inline constexpr Scalar getFreq(const FreqBase::Unit unit) const noexcept {
     if (tick_ != 0)
-      return static_cast<Scalar>(TimeBase::Unit::S) /
-             static_cast<Scalar>(picosec());
+      return (static_cast<Scalar>(FreqBase::Unit::THz) /
+              static_cast<Scalar>(picosec())) /
+             static_cast<Scalar>(unit);
     return 0.0;
   }
 
@@ -241,8 +246,14 @@ public:
   }
 
   inline constexpr Scalar getPeriodInSec() const noexcept {
+    return getPeriod(TimeBase::Unit::S);
+  }
+
+  inline constexpr Scalar getPeriod(const TimeBase::Unit unit) const noexcept {
     if (cycles_ != 0)
-      return 1.0 / static_cast<Scalar>(hertz());
+      return (static_cast<Scalar>(TimeBase::Unit::S) /
+              static_cast<Scalar>(hertz())) /
+             static_cast<Tick>(unit);
     return 0.0;
   }
 
