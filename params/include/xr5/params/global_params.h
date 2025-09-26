@@ -48,7 +48,13 @@ public:
    *
    * @return pointer to the param object
    */
-  static std::shared_ptr<GlobalParams> GetInstance() { return params_; }
+  static std::shared_ptr<GlobalParams> getInstance() {
+    if (params_ == nullptr) {
+      auto logger = xr5::utils::Logger::getInstance();
+      logger->warn("[GlobalParams::getInstance] params is not initialized.");
+    }
+    return params_;
+  }
 
   /**
    * TODO: instead of hardcoding the unit to picosec, make it flexible to be
