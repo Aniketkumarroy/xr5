@@ -35,7 +35,7 @@ public:
     static std::mutex mutex;
     std::lock_guard<std::mutex> lock(mutex);
     if (params_ != nullptr) {
-      auto logger = xr5::utils::Logger::GetInstance();
+      auto logger = xr5::utils::Logger::getInstance();
       logger->warn("[GlobalParams::init] params is already initialized");
       return;
     }

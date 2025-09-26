@@ -27,7 +27,7 @@ public:
 
   inline typename DataArray::DataType &at(const xr5::types::Address addr) {
     if (!isValid(addr)) {
-      auto logger = xr5::utils::Logger::GetInstance();
+      auto logger = xr5::utils::Logger::getInstance();
       logger->error(
           "[SegmentedArrayMemoryManager::at] {} is out of limits [{}, {}]",
           addr, base_addr_, base_addr_ + size_);
@@ -46,7 +46,7 @@ public:
 
   bool allocateMemory(const xr5::types::Address addr) {
     if (!isValid(addr)) {
-      auto logger = xr5::utils::Logger::GetInstance();
+      auto logger = xr5::utils::Logger::getInstance();
       logger->error(
           "[SegmentedArrayMemoryManager::allocateMemory] {} is out of "
           "limits [{}, {}]",
@@ -69,7 +69,7 @@ public:
 
   void removeMemory(const xr5::types::Address addr) {
     if (!isValid(addr)) {
-      auto logger = xr5::utils::Logger::GetInstance();
+      auto logger = xr5::utils::Logger::getInstance();
       logger->error("[SegmentedArrayMemoryManager::removeMemory] {} is out of "
                     "limits [{}, {}]",
                     addr, base_addr_, base_addr_ + size_);
@@ -82,7 +82,7 @@ public:
       constexpr auto _shift = __builtin_ctzll(DataArray::size);
       size_t _ret = memory_.erase(addr >> _shift);
       if (_ret == 0) {
-        auto logger = xr5::utils::Logger::GetInstance();
+        auto logger = xr5::utils::Logger::getInstance();
         logger->warn(
             "[SegmentedArrayMemoryManager::removeMemory] {} doesn't exist",
             addr);
@@ -90,7 +90,7 @@ public:
     } else {
       size_t _ret = memory_.erase(addr / DataArray::size);
       if (_ret == 0) {
-        auto logger = xr5::utils::Logger::GetInstance();
+        auto logger = xr5::utils::Logger::getInstance();
         logger->warn(
             "[SegmentedArrayMemoryManager::removeMemory] {} doesn't exist",
             addr);

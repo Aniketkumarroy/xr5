@@ -17,7 +17,7 @@ class EventQueue {
 public:
   using Ptr = std::shared_ptr<EventQueue>;
 
-  EventQueue() : logger_(xr5::utils::Logger::GetInstance()) {}
+  EventQueue() : logger_(xr5::utils::Logger::getInstance()) {}
   ~EventQueue() = default;
 
   bool isEmpty() { return !head_; }

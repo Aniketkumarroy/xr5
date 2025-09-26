@@ -63,7 +63,7 @@ public:
    *
    * @return pointer to the spdlog object
    */
-  static std::shared_ptr<spdlog::logger> GetInstance();
+  static std::shared_ptr<spdlog::logger> getInstance();
 
   /**
     * @brief Set the logger level object

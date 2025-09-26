@@ -5,11 +5,11 @@ namespace utils {
 
 std::shared_ptr<spdlog::logger> Logger::logger_;
 
-std::shared_ptr<spdlog::logger> Logger::GetInstance() {
+std::shared_ptr<spdlog::logger> Logger::getInstance() {
   if (logger_ == nullptr) {
     init();
     logger_->warn(
-        "[Logger::GetInstance] Created a new logger with default values");
+        "[Logger::getInstance] Created a new logger with default values");
   }
   return logger_;
 }
