@@ -14,7 +14,7 @@ namespace params {
 
 class GlobalParams {
 public:
-  // Disable constructor
+  // Disable default constructor
   GlobalParams() = delete;
   /**
    * @brief As this class should not be cloneable.
@@ -64,7 +64,7 @@ public:
     return dram_data_receive_delay_.picosec();
   }
 
-  inline const xr5::types::Time &getDramDataReceiveDelay() const {
+  inline const xr5::types::TimePS &getDramDataReceiveDelay() const {
     return dram_data_receive_delay_;
   }
 
@@ -72,7 +72,7 @@ public:
     return dram_addr_receive_delay_.picosec();
   }
 
-  inline const xr5::types::Time &getDramAddrReceiveDelay() const {
+  inline const xr5::types::TimePS &getDramAddrReceiveDelay() const {
     return dram_addr_receive_delay_;
   }
 
@@ -80,7 +80,7 @@ public:
     return dram_cmd_receive_delay_.picosec();
   }
 
-  inline const xr5::types::Time &getDramCmdReceiveDelay() const {
+  inline const xr5::types::TimePS &getDramCmdReceiveDelay() const {
     return dram_cmd_receive_delay_;
   }
 
@@ -89,14 +89,13 @@ public:
   }
 
 private:
-  explicit GlobalParams(const std::string &config_root)
-      : config_root_(config_root) {}
+  GlobalParams(const std::string &config_root) : config_root_(config_root) {}
   static std::shared_ptr<GlobalParams> params_;
   std::string config_root_;
 
-  xr5::types::Time dram_data_receive_delay_;
-  xr5::types::Time dram_addr_receive_delay_;
-  xr5::types::Time dram_cmd_receive_delay_;
+  xr5::types::TimePS dram_data_receive_delay_;
+  xr5::types::TimePS dram_addr_receive_delay_;
+  xr5::types::TimePS dram_cmd_receive_delay_;
   xr5::types::Size dram_capacity_;
 };
 } // namespace params

@@ -293,6 +293,9 @@ inline auto FreqBase::TeraHertz(Cycle thz) noexcept {
   return Freq<FreqBase::Unit::THz>(thz);
 }
 
+using TimePS = Time<TimeBase::Unit::PS>;
+using FreqHz = Freq<FreqBase::Unit::Hz>;
+
 /** TODO: add a clean descriptive failsafe error message for invalid values */
 using TimeQuanta = Time<TimeBase::Unit::XR5_TIME_QUANTA>;
 } // namespace types

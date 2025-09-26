@@ -1,5 +1,6 @@
 #include "xr5/memory/memory_base.h"
 #include "xr5/memory/mem_events.h"
+#include "xr5/utils/global_clock.h"
 
 namespace xr5 {
 namespace memory {
@@ -57,8 +58,8 @@ xr5::sim::Port *MemoryObject::getPort(const xr5::sim::Port::Id id) {
 void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
   /** TODO: replace 0 with proper schedule time */
   xr5::sim::Event::Ptr e =
-      xr5::utils::make_ptr<xr5::sim::Event, DataLatchEvent>(mem_obj_,
-                                                            packet->word, 0);
+      xr5::utils::make_ptr<xr5::sim::Event, DataLatchEvent>(
+          mem_obj_, packet->word, xr5::global_clock::get_curr_tick() + 0);
   mem_obj_->schedule(std::move(e));
 }
 
@@ -66,7 +67,8 @@ void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
   /** TODO: replace 0 with proper schedule time */
   xr5::sim::Event::Ptr e =
       xr5::utils::make_ptr<xr5::sim::Event, AddrLatchEvent>(
-          mem_obj_, packet->addr, packet->data.dram_addr, 0);
+          mem_obj_, packet->addr, packet->data.dram_addr,
+          xr5::global_clock::get_curr_tick() + 0);
 
   mem_obj_->schedule(std::move(e));
 }
@@ -74,7 +76,7 @@ void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
 void MemoryObject::CmdPort::receive(const xr5::sim::Packet *packet) {
   /** TODO: replace 0 with proper schedule time */
   xr5::sim::Event::Ptr e = xr5::utils::make_ptr<xr5::sim::Event, CmdLatchEvent>(
-      mem_obj_, packet->data.dram_cmd, 0);
+      mem_obj_, packet->data.dram_cmd, xr5::global_clock::get_curr_tick() + 0);
 
   mem_obj_->schedule(std::move(e));
 }

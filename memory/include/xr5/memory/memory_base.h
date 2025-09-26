@@ -22,9 +22,9 @@ public:
     xr5::sim::Port::Ptr addr_port = nullptr;
     xr5::sim::Port::Ptr cmd_port = nullptr;
 
-    xr5::types::TimeQuanta data_receive_delay = xr5::types::TimeQuanta(0);
-    xr5::types::TimeQuanta addr_receive_delay = xr5::types::TimeQuanta(0);
-    xr5::types::TimeQuanta cmd_receive_delay = xr5::types::TimeQuanta(0);
+    xr5::types::TimePS data_receive_delay = xr5::types::TimePS(0);
+    xr5::types::TimePS addr_receive_delay = xr5::types::TimePS(0);
+    xr5::types::TimePS cmd_receive_delay = xr5::types::TimePS(0);
   };
 
   MemoryObject(const MemoryObject::Params &params);
@@ -117,9 +117,9 @@ private:
   xr5::sim::Port::Ptr cmd_port_ = nullptr;
   xr5::sim::Port::Ptr data_port_ = nullptr;
 
-  xr5::types::TimeQuanta data_receive_delay_;
-  xr5::types::TimeQuanta addr_receive_delay_;
-  xr5::types::TimeQuanta cmd_receive_delay_;
+  xr5::types::TimePS data_receive_delay_;
+  xr5::types::TimePS addr_receive_delay_;
+  xr5::types::TimePS cmd_receive_delay_;
 };
 
 template <typename Data,
