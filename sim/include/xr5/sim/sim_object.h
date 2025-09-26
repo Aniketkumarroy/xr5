@@ -25,8 +25,7 @@ public:
     ptr_event_queue_->insert(std::move(_event));
   }
 
-  virtual Port *getPort(const std::string &name,
-                        Port::Id idx = Port::kInvalidId);
+  virtual Port *getPort(std::string &name, Port::Id &idx) const;
 
 private:
   EventQueue::Ptr ptr_event_queue_;

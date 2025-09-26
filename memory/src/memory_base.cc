@@ -55,6 +55,22 @@ xr5::sim::Port *MemoryObject::getPort(const xr5::sim::Port::Id id) {
     return nullptr;
 }
 
+xr5::sim::Port *MemoryObject::getPort(std::string &name,
+                                      xr5::sim::Port::Id &idx) const {
+  xr5::sim::Port *_port = getPort(name);
+  if (_port != nullptr) {
+    idx = _port->getId();
+    return _port;
+  }
+
+  _port = getPort(idx);
+  if (_port != nullptr) {
+    name = _port->getName();
+    return _port;
+  }
+  return nullptr;
+}
+
 void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
   /** TODO: replace 0 with proper schedule time */
   xr5::sim::Event::Ptr e =

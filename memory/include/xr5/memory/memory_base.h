@@ -62,7 +62,8 @@ public:
 
   xr5::sim::Port *getPort(const std::string &name);
 
-  xr5::sim::Port *getPort(const xr5::sim::Port::Id id);
+  xr5::sim::Port *getPort(std::string &name,
+                          xr5::sim::Port::Id &idx) const override;
 
   class DataPort : public xr5::sim::Port {
   public:
