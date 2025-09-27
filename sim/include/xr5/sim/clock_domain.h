@@ -1,6 +1,7 @@
 #ifndef CLOCK_DOMAIN_H_
 #define CLOCK_DOMAIN_H_
 
+#include "xr5/utils/global_clock.h"
 #include "xr5/utils/types.h"
 #include <algorithm>
 #include <vector>
@@ -17,16 +18,33 @@ public:
     return period_;
   }
   inline xr5::types::Tick getPeriodInPicoSec() const noexcept {
-    /** DISCUSS: since period_ unit is already in picosec we can use a cheap
-     * getter */
-    return period_.getRawTick();
+    return full_cycle_;
   }
 
-  inline const xr5::types::FreqHz &getFrequency() const noexcept { return freq_; }
+  inline const xr5::types::FreqHz &getFrequency() const noexcept {
+    return freq_;
+  }
   inline xr5::types::Cycle getFrequencyInHertz() const noexcept {
     /** DISCUSS: since freq_ unit is already in Hertz we can use a cheap getter
      */
     return freq_.getRawCycles();
+  }
+
+  inline xr5::types::Tick getTickForNextCycle() {
+
+    /**
+     *   _______         _______         _______         _______         _______
+     * _|       |_______|       |_______|       |_______|       |_______|
+     *   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _   _
+     * _| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_
+     */
+    return full_cycle_ -
+           ((xr5::global_clock::get_curr_tick() - offset_) % full_cycle_);
+  }
+
+  inline xr5::types::Tick getTickForNextHalfCycle() {
+    auto _offset = (xr5::global_clock::get_curr_tick() - offset_) % full_cycle_;
+    return half_cycle_ - (_offset % half_cycle_);
   }
 
   void setPeriodAndFrequency(const xr5::types::TimePS &period) noexcept;
@@ -36,6 +54,10 @@ public:
 protected:
   xr5::types::FreqHz freq_;
   xr5::types::TimePS period_;
+
+  xr5::types::Tick offset_;
+  xr5::types::Tick full_cycle_;
+  xr5::types::Tick half_cycle_;
 };
 
 class DerivedClockDomain; // forward declaration

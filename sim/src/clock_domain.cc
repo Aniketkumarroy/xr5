@@ -1,4 +1,5 @@
 #include "xr5/sim/clock_domain.h"
+#include <cmath>
 
 namespace xr5 {
 namespace sim {
@@ -7,6 +8,11 @@ void ClockDomain::setPeriodAndFrequency(
     const xr5::types::TimePS &period) noexcept {
   period_ = period;
   freq_ = static_cast<xr5::types::Cycle>(period_.getFreqInHertz());
+  offset_ = xr5::global_clock::get_curr_tick();
+  /** DISCUSS: since period_ unit is already in picosec we can use a cheap
+   * getter */
+  full_cycle_ = period_.getRawTick();
+  half_cycle_ = std::ceil(static_cast<xr5::types::Scalar>(full_cycle_) / 2.0);
 }
 
 void ClockDomain::setPeriodAndFrequency(
@@ -14,6 +20,11 @@ void ClockDomain::setPeriodAndFrequency(
   freq_ = freq;
   period_ = static_cast<xr5::types::Tick>(
       freq_.getPeriod(xr5::types::TimeBase::Unit::PS));
+  offset_ = xr5::global_clock::get_curr_tick();
+  /** DISCUSS: since period_ unit is already in picosec we can use a cheap
+   * getter */
+  full_cycle_ = period_.getRawTick();
+  half_cycle_ = std::ceil(static_cast<xr5::types::Scalar>(full_cycle_) / 2.0);
 }
 
 SrcClockDomain::~SrcClockDomain() {
