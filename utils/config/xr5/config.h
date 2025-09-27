@@ -5,4 +5,6 @@
 
 #define XR5_TIME_QUANTA PS
 
+#define ENABLE_STEP_TIME 1
+
 #endif

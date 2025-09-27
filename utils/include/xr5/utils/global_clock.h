@@ -10,7 +10,23 @@
 namespace xr5 {
 namespace global_clock {
 
-xr5::types::Tick get_curr_tick() noexcept;
+extern xr5::types::TimePS clock_;
+extern xr5::types::Tick epoch_;
+#if ENABLE_STEP_TIME
+extern xr5::types::Tick step_;
+#endif
+inline constexpr xr5::types::Tick order_ =
+    static_cast<xr5::types::Tick>(xr5::types::TimeQuanta::getUnit());
+
+inline xr5::types::Tick get_curr_tick() noexcept { return clock_.getRawTick(); }
+
+inline xr5::types::Tick get_curr_sim_tick() noexcept {
+#if ENABLE_STEP_TIME
+  return (get_curr_tick() - epoch_) / step_;
+#else
+  return (get_curr_tick() - epoch_) / order_;
+#endif
+}
 
 class SimulatorBase; // forward declaration
 
@@ -22,11 +38,20 @@ class internal {
 private:
   friend SimulatorBase;
 
-  static void increment() noexcept;
-  static void inc() noexcept;
+#if ENABLE_STEP_TIME
+  static inline void increment() noexcept { clock_ += step_; }
+#endif
+  static inline void inc() noexcept { clock_ += order_; }
 
-  static void set_epoch(const xr5::types::Tick epoch) noexcept;
-  static void set_step(const xr5::types::Tick step) noexcept;
+  static inline void set_epoch(const xr5::types::Tick epoch) noexcept {
+    clock_ = epoch;
+    epoch_ = epoch;
+  };
+#if ENABLE_STEP_TIME
+  static inline void set_step(const xr5::types::Tick step) noexcept {
+    step_ = step * order_;
+  };
+#endif
 };
 } // namespace global_clock
 } // namespace xr5
