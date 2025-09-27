@@ -1,4 +1,5 @@
 #include "xr5/sim/clock_domain.h"
+#include "xr5/utils/logger.h"
 #include <cmath>
 
 namespace xr5 {
@@ -6,6 +7,12 @@ namespace sim {
 
 void ClockDomain::setPeriodAndFrequency(
     const xr5::types::TimePS &period) noexcept {
+  if (period == 0) {
+    auto logger = xr5::utils::Logger::getInstance();
+    logger->error(
+        "[ClockDomain::setPeriodAndFrequency] period cannot be set to 0");
+    return;
+  }
   period_ = period;
   freq_ = static_cast<xr5::types::Cycle>(period_.getFreqInHertz());
   offset_ = xr5::global_clock::get_curr_tick();
@@ -17,6 +24,12 @@ void ClockDomain::setPeriodAndFrequency(
 
 void ClockDomain::setPeriodAndFrequency(
     const xr5::types::FreqHz &freq) noexcept {
+  if (freq == 0) {
+    auto logger = xr5::utils::Logger::getInstance();
+    logger->error(
+        "[ClockDomain::setPeriodAndFrequency] frequency cannot be set to 0");
+    return;
+  }
   freq_ = freq;
   period_ = static_cast<xr5::types::Tick>(
       freq_.getPeriod(xr5::types::TimeBase::Unit::PS));

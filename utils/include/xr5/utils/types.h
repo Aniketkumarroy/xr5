@@ -125,6 +125,10 @@ public:
     return *this;
   }
 
+  bool operator==(const Tick tick) const noexcept { return tick_ == tick; }
+
+  bool operator!=(const Tick tick) const noexcept { return tick_ != tick; }
+
 protected:
   Tick tick_;
 };
@@ -154,6 +158,10 @@ public:
     cycles_ = static_cast<Cycle>(cycles_ * multiplier);
     return *this;
   }
+
+  bool operator==(const Cycle cycle) const noexcept { return cycles_ == cycle; }
+
+  bool operator!=(const Cycle cycle) const noexcept { return cycles_ != cycle; }
 
 protected:
   Cycle cycles_;

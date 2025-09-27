@@ -52,12 +52,13 @@ public:
   void setPeriodAndFrequency(const xr5::types::FreqHz &freq) noexcept;
 
 protected:
-  xr5::types::FreqHz freq_;
-  xr5::types::TimePS period_;
+  xr5::types::FreqHz freq_ =
+      1 * static_cast<xr5::types::Cycle>(xr5::types::FreqBase::Unit::Hz);
+  xr5::types::TimePS period_ = 1;
 
-  xr5::types::Tick offset_;
-  xr5::types::Tick full_cycle_;
-  xr5::types::Tick half_cycle_;
+  xr5::types::Tick offset_ = 0;
+  xr5::types::Tick full_cycle_ = 1;
+  xr5::types::Tick half_cycle_ = 1;
 };
 
 class DerivedClockDomain; // forward declaration
