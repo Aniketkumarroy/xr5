@@ -7,15 +7,15 @@
 namespace xr5 {
 namespace memory {
 
-class DataLatchEvent : public xr5::sim::Event {
+class MemDataLatchEvent : public xr5::sim::Event {
 public:
-  DataLatchEvent() = delete;
-  DataLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
-                 const xr5::types::Tick when,
-                 const xr5::sim::Event::Priority priority =
-                     xr5::sim::Event::kDefaultPriority)
+  MemDataLatchEvent() = delete;
+  MemDataLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
+                    const xr5::types::Tick when,
+                    const xr5::sim::Event::Priority priority =
+                        xr5::sim::Event::kDefaultPriority)
       : xr5::sim::Event(when, priority), mem_obj_(obj), pckt_(pckt) {}
-  ~DataLatchEvent() = default;
+  ~MemDataLatchEvent() = default;
 
   void run() override;
 
@@ -28,15 +28,15 @@ private:
   const std::string name_ = "memory_data_latch_event";
 };
 
-class AddrLatchEvent : public xr5::sim::Event {
+class MemAddrLatchEvent : public xr5::sim::Event {
 public:
-  AddrLatchEvent() = delete;
-  AddrLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
-                 const xr5::types::Tick when,
-                 const xr5::sim::Event::Priority priority =
-                     xr5::sim::Event::kDefaultPriority)
+  MemAddrLatchEvent() = delete;
+  MemAddrLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
+                    const xr5::types::Tick when,
+                    const xr5::sim::Event::Priority priority =
+                        xr5::sim::Event::kDefaultPriority)
       : xr5::sim::Event(when, priority), mem_obj_(obj), pckt_(pckt) {}
-  ~AddrLatchEvent() = default;
+  ~MemAddrLatchEvent() = default;
 
   void run() override;
 
@@ -49,15 +49,15 @@ private:
   const std::string name_ = "memory_addr_latch_event";
 };
 
-class CmdLatchEvent : public xr5::sim::Event {
+class MemCmdLatchEvent : public xr5::sim::Event {
 public:
-  CmdLatchEvent() = delete;
-  CmdLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
-                const xr5::types::Tick when,
-                const xr5::sim::Event::Priority priority =
-                    xr5::sim::Event::kDefaultPriority)
+  MemCmdLatchEvent() = delete;
+  MemCmdLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
+                   const xr5::types::Tick when,
+                   const xr5::sim::Event::Priority priority =
+                       xr5::sim::Event::kDefaultPriority)
       : xr5::sim::Event(when, priority), mem_obj_(obj), pckt_(pckt) {}
-  ~CmdLatchEvent() = default;
+  ~MemCmdLatchEvent() = default;
 
   void run() override;
 

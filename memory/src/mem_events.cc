@@ -3,17 +3,17 @@
 namespace xr5 {
 namespace memory {
 
-void DataLatchEvent::run() {
+void MemDataLatchEvent::run() {
   mem_obj_->data_packet_ = pckt_;
   mem_obj_->handleDataPacket();
 }
 
-void AddrLatchEvent::run() {
+void MemAddrLatchEvent::run() {
   mem_obj_->addr_packet_ = pckt_;
   mem_obj_->handleAddrPacket();
 }
 
-void CmdLatchEvent::run() {
+void MemCmdLatchEvent::run() {
   mem_obj_->cmd_packet_ = pckt_;
   mem_obj_->handleCmdPacket();
 }

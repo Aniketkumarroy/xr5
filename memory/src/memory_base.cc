@@ -80,7 +80,7 @@ void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
                               mem_obj_->getTick_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
-        xr5::utils::make_ptr<xr5::sim::Event, DataLatchEvent>(
+        xr5::utils::make_ptr<xr5::sim::Event, MemDataLatchEvent>(
             mem_obj_, *packet, xr5::global_clock::get_curr_tick() + _latency);
     mem_obj_->schedule(std::move(e));
   } else {
@@ -94,7 +94,7 @@ void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
                               mem_obj_->getTick_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
-        xr5::utils::make_ptr<xr5::sim::Event, AddrLatchEvent>(
+        xr5::utils::make_ptr<xr5::sim::Event, MemAddrLatchEvent>(
             mem_obj_, *packet, xr5::global_clock::get_curr_tick() + _latency);
 
     mem_obj_->schedule(std::move(e));
@@ -109,7 +109,7 @@ void MemoryObject::CmdPort::receive(const xr5::sim::Packet *packet) {
                               mem_obj_->getTick_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
-        xr5::utils::make_ptr<xr5::sim::Event, CmdLatchEvent>(
+        xr5::utils::make_ptr<xr5::sim::Event, MemCmdLatchEvent>(
             mem_obj_, *packet, xr5::global_clock::get_curr_tick() + _latency);
 
     mem_obj_->schedule(std::move(e));
