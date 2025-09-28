@@ -28,6 +28,14 @@ inline xr5::types::Tick get_curr_sim_tick() noexcept {
 #endif
 }
 
+inline xr5::types::Tick get_sim_step() noexcept {
+#if ENABLE_STEP_TIME
+  return step_;
+#else
+  return order_;
+#endif
+}
+
 class SimulatorBase; // forward declaration
 
 class internal {
