@@ -21,21 +21,20 @@ class MemoryObject : public xr5::sim::SimObject {
 public:
   struct Params {
   public:
-    xr5::sim::ClockDomain *clock = nullptr;
     /** DISCUSS: this addhoc solution is done to also make the MemoryObject
      * class usefull for non-clocked purely combinational memories */
+    xr5::sim::ClockDomain *clock = nullptr;
     xr5::types::Tick (*getTick)(xr5::sim::ClockDomain *) = getTickForNoClock;
-
-    xr5::sim::Port::Ptr data_port = nullptr;
-    xr5::sim::Port::Ptr addr_port = nullptr;
-    xr5::sim::Port::Ptr cmd_port = nullptr;
 
     xr5::types::TimePS data_receive_delay = 0;
     xr5::types::TimePS addr_receive_delay = 0;
     xr5::types::TimePS cmd_receive_delay = 0;
   };
 
-  MemoryObject(const MemoryObject::Params &params);
+  MemoryObject(const MemoryObject::Params &params,
+               xr5::sim::Port::Ptr data_port = nullptr,
+               xr5::sim::Port::Ptr addr_port = nullptr,
+               xr5::sim::Port::Ptr cmd_port = nullptr);
 
   virtual ~MemoryObject() = default;
 
