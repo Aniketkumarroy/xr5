@@ -10,9 +10,9 @@ namespace memory {
 
 /** TODO: replace nullptr with proper event queue pointer for SimObject */
 MemoryObject::MemoryObject(const MemoryObject::Params &params,
-                           xr5::sim::Port::Ptr data_port = nullptr,
-                           xr5::sim::Port::Ptr addr_port = nullptr,
-                           xr5::sim::Port::Ptr cmd_port = nullptr)
+                           xr5::sim::Port::Ptr data_port,
+                           xr5::sim::Port::Ptr addr_port,
+                           xr5::sim::Port::Ptr cmd_port)
     : SimObject(nullptr), clock_(params.clock), getTick_(params.getTick),
       data_receive_delay_(params.data_receive_delay),
       addr_receive_delay_(params.addr_receive_delay),

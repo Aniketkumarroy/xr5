@@ -2,38 +2,55 @@
 #define DRAM_H_
 
 #include "xr5/memory/memory_base.h"
+#include "xr5/utils/logger.h"
 #include "xr5/utils/types.h"
 
 namespace xr5 {
 namespace memory {
 
-struct DramParams {
-  xr5::types::Size capacity;
-  uint16_t io_width_of_chip;
-  uint8_t no_of_chips_per_rank;
-  uint16_t rank;
-};
-
 class Dram : public MemoryBase<xr5::types::Address> {
-
 public:
+  struct Params {
+    xr5::types::Size capacity;
+    uint8_t io_width_of_chip;
+    uint8_t no_of_chips_per_rank;
+    uint8_t rank;
+  };
+
   Dram() = delete;
-  Dram(const DramParams &params, const MemoryObject::Params mem_param)
+  Dram(const Params &dram_params, const MemoryObject::Params &mem_params)
       : MemoryBase<xr5::types::Address>(
-            0, params.capacity.bytes() / xr5::types::WordSize, mem_param),
-        params_(params) {
-    assert(params_.io_width_of_chip * params_.no_of_chips_per_rank ==
-           xr5::types::WordSize * 8);
+            0, dram_params.capacity.bytes() / xr5::types::WordSize, mem_params),
+        capacity_(dram_params.capacity),
+        io_width_of_chip_(dram_params.io_width_of_chip),
+        no_of_chips_per_rank_(dram_params.no_of_chips_per_rank),
+        rank_(dram_params.rank) {
+    if (io_width_of_chip_ * no_of_chips_per_rank_ != xr5::types::WordSize * 8) {
+      auto logger = xr5::utils::Logger::getInstance();
+      logger->error("[Dram::Dram] CONFIG ERROR!! the data bus width of the "
+                    "Dram is calculated as 'io width of each chip x no of "
+                    "chips per rank'. however the provided params equals "
+                    "to {} width of data bus, not compatible for {}-bit system",
+                    io_width_of_chip_ * no_of_chips_per_rank_,
+                    xr5::types::WordSize * 8);
+    }
   }
   ~Dram() = default;
 
-  const xr5::types::Size &getCapacity() { return params_.capacity; }
-  const DramParams &getDramParams() { return params_; }
+  const xr5::types::Size &getCapacity() { return capacity_; }
+  uint8_t getIOWidthOfEachChip() { return io_width_of_chip_; }
+  uint8_t getNoOfChipsPerRank() { return no_of_chips_per_rank_; }
+  uint8_t getRank() { return rank_; }
+
+  void handleDataPacket() override {};
+  void handleAddrPacket() override {};
+  void handleCmdPacket() override;
 
 private:
-  const DramParams params_;
-  xr5::types::Address addr_;
-  xr5::types::Word data_;
+  const xr5::types::Size capacity_;
+  const uint8_t io_width_of_chip_;
+  const uint8_t no_of_chips_per_rank_;
+  const uint8_t rank_;
 };
 
 } // namespace memory
