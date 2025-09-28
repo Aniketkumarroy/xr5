@@ -10,7 +10,7 @@ namespace memory {
 
 /** TODO: replace nullptr with proper event queue pointer for SimObject */
 MemoryObject::MemoryObject(const MemoryObject::Params &params)
-    : SimObject(nullptr), clock_(params.clock),
+    : SimObject(nullptr), clock_(params.clock), getTick_(params.getTick),
       data_receive_delay_(params.data_receive_delay),
       addr_receive_delay_(params.addr_receive_delay),
       cmd_receive_delay_(params.cmd_receive_delay) {
@@ -73,27 +73,35 @@ xr5::sim::Port *MemoryObject::getPort(std::string &name,
 }
 
 void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
-  /** TODO: replace 0 with proper schedule time */
+  /** TODO: handle case where _latency is smaller than sim step */
+  xr5::types::Tick _latency = mem_obj_->data_receive_delay_.getRawTick() +
+                              mem_obj_->getTick_(mem_obj_->clock_);
   xr5::sim::Event::Ptr e =
       xr5::utils::make_ptr<xr5::sim::Event, DataLatchEvent>(
-          mem_obj_, packet->word, xr5::global_clock::get_curr_tick() + 0);
+          mem_obj_, packet->word,
+          xr5::global_clock::get_curr_tick() + _latency);
   mem_obj_->schedule(std::move(e));
 }
 
 void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
-  /** TODO: replace 0 with proper schedule time */
+  /** TODO: handle case where _latency is smaller than sim step */
+  xr5::types::Tick _latency = mem_obj_->addr_receive_delay_.getRawTick() +
+                              mem_obj_->getTick_(mem_obj_->clock_);
   xr5::sim::Event::Ptr e =
       xr5::utils::make_ptr<xr5::sim::Event, AddrLatchEvent>(
           mem_obj_, packet->addr, packet->data.dram_addr,
-          xr5::global_clock::get_curr_tick() + 0);
+          xr5::global_clock::get_curr_tick() + _latency);
 
   mem_obj_->schedule(std::move(e));
 }
 
 void MemoryObject::CmdPort::receive(const xr5::sim::Packet *packet) {
-  /** TODO: replace 0 with proper schedule time */
+  /** TODO: handle case where _latency is smaller than sim step */
+  xr5::types::Tick _latency = mem_obj_->cmd_receive_delay_.getRawTick() +
+                              mem_obj_->getTick_(mem_obj_->clock_);
   xr5::sim::Event::Ptr e = xr5::utils::make_ptr<xr5::sim::Event, CmdLatchEvent>(
-      mem_obj_, packet->data.dram_cmd, xr5::global_clock::get_curr_tick() + 0);
+      mem_obj_, packet->data.dram_cmd,
+      xr5::global_clock::get_curr_tick() + _latency);
 
   mem_obj_->schedule(std::move(e));
 }

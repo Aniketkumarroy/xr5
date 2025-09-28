@@ -9,6 +9,11 @@
 namespace xr5 {
 namespace memory {
 
+constexpr xr5::types::Tick
+getTickForNoClock([[maybe_unused]] xr5::sim::ClockDomain *clk) {
+  return 0;
+}
+
 /** DISCUSS: if anyone have any better names instead of MemoryObject and
  * MemoryBase please help */
 
@@ -17,14 +22,17 @@ public:
   struct Params {
   public:
     xr5::sim::ClockDomain *clock = nullptr;
+    /** DISCUSS: this addhoc solution is done to also make the MemoryObject
+     * class usefull for non-clocked purely combinational memories */
+    xr5::types::Tick (*getTick)(xr5::sim::ClockDomain *) = getTickForNoClock;
 
     xr5::sim::Port::Ptr data_port = nullptr;
     xr5::sim::Port::Ptr addr_port = nullptr;
     xr5::sim::Port::Ptr cmd_port = nullptr;
 
-    xr5::types::TimePS data_receive_delay = xr5::types::TimePS(0);
-    xr5::types::TimePS addr_receive_delay = xr5::types::TimePS(0);
-    xr5::types::TimePS cmd_receive_delay = xr5::types::TimePS(0);
+    xr5::types::TimePS data_receive_delay = 0;
+    xr5::types::TimePS addr_receive_delay = 0;
+    xr5::types::TimePS cmd_receive_delay = 0;
   };
 
   MemoryObject(const MemoryObject::Params &params);
@@ -112,6 +120,7 @@ public:
 
 private:
   xr5::sim::ClockDomain *clock_ = nullptr;
+  xr5::types::Tick (*getTick_)(xr5::sim::ClockDomain *) = nullptr;
 
   xr5::sim::Packet packet_to_send_;
 
