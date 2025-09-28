@@ -78,11 +78,10 @@ void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
         xr5::utils::make_ptr<xr5::sim::Event, DataLatchEvent>(
-            mem_obj_, packet->word,
-            xr5::global_clock::get_curr_tick() + _latency);
+            mem_obj_, *packet, xr5::global_clock::get_curr_tick() + _latency);
     mem_obj_->schedule(std::move(e));
   } else {
-    mem_obj_->data_packet_.word = packet->word;
+    mem_obj_->data_packet_ = *packet;
     mem_obj_->handleDataPacket();
   }
 }
@@ -93,13 +92,11 @@ void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
         xr5::utils::make_ptr<xr5::sim::Event, AddrLatchEvent>(
-            mem_obj_, packet->addr, packet->data.dram_addr,
-            xr5::global_clock::get_curr_tick() + _latency);
+            mem_obj_, *packet, xr5::global_clock::get_curr_tick() + _latency);
 
     mem_obj_->schedule(std::move(e));
   } else {
-    mem_obj_->addr_packet_.addr = packet->addr;
-    mem_obj_->addr_packet_.data.dram_addr = packet->data.dram_addr;
+    mem_obj_->addr_packet_ = *packet;
     mem_obj_->handleAddrPacket();
   }
 }
@@ -110,12 +107,11 @@ void MemoryObject::CmdPort::receive(const xr5::sim::Packet *packet) {
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
         xr5::utils::make_ptr<xr5::sim::Event, CmdLatchEvent>(
-            mem_obj_, packet->data.dram_cmd,
-            xr5::global_clock::get_curr_tick() + _latency);
+            mem_obj_, *packet, xr5::global_clock::get_curr_tick() + _latency);
 
     mem_obj_->schedule(std::move(e));
   } else {
-    mem_obj_->cmd_packet_.data.dram_cmd = packet->data.dram_cmd;
+    mem_obj_->cmd_packet_ = *packet;
     mem_obj_->handleCmdPacket();
   }
 }

@@ -10,11 +10,11 @@ namespace memory {
 class DataLatchEvent : public xr5::sim::Event {
 public:
   DataLatchEvent() = delete;
-  DataLatchEvent(MemoryObject *obj, xr5::types::Word word,
+  DataLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
                  const xr5::types::Tick when,
                  const xr5::sim::Event::Priority priority =
                      xr5::sim::Event::kDefaultPriority)
-      : xr5::sim::Event(when, priority), mem_obj_(obj), word_(word) {}
+      : xr5::sim::Event(when, priority), mem_obj_(obj), pckt_(pckt) {}
   ~DataLatchEvent() = default;
 
   void run() override;
@@ -23,7 +23,7 @@ public:
 
 private:
   MemoryObject *mem_obj_;
-  xr5::types::Word word_;
+  xr5::sim::Packet pckt_;
 
   const std::string name_ = "memory_data_latch_event";
 };
@@ -31,13 +31,11 @@ private:
 class AddrLatchEvent : public xr5::sim::Event {
 public:
   AddrLatchEvent() = delete;
-  AddrLatchEvent(MemoryObject *obj, xr5::types::Address addr,
-                 const xr5::types::DramAddr &dram_addr,
+  AddrLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
                  const xr5::types::Tick when,
                  const xr5::sim::Event::Priority priority =
                      xr5::sim::Event::kDefaultPriority)
-      : xr5::sim::Event(when, priority), mem_obj_(obj), addr_(addr),
-        dram_addr_(dram_addr) {}
+      : xr5::sim::Event(when, priority), mem_obj_(obj), pckt_(pckt) {}
   ~AddrLatchEvent() = default;
 
   void run() override;
@@ -46,8 +44,7 @@ public:
 
 private:
   MemoryObject *mem_obj_;
-  xr5::types::Address addr_;
-  xr5::types::DramAddr dram_addr_;
+  xr5::sim::Packet pckt_;
 
   const std::string name_ = "memory_addr_latch_event";
 };
@@ -55,11 +52,11 @@ private:
 class CmdLatchEvent : public xr5::sim::Event {
 public:
   CmdLatchEvent() = delete;
-  CmdLatchEvent(MemoryObject *obj, const xr5::types::DramCmd &dram_cmd,
+  CmdLatchEvent(MemoryObject *obj, const xr5::sim::Packet &pckt,
                 const xr5::types::Tick when,
                 const xr5::sim::Event::Priority priority =
                     xr5::sim::Event::kDefaultPriority)
-      : xr5::sim::Event(when, priority), mem_obj_(obj), dram_cmd_(dram_cmd) {}
+      : xr5::sim::Event(when, priority), mem_obj_(obj), pckt_(pckt) {}
   ~CmdLatchEvent() = default;
 
   void run() override;
@@ -68,7 +65,7 @@ public:
 
 private:
   MemoryObject *mem_obj_;
-  xr5::types::DramCmd dram_cmd_;
+  xr5::sim::Packet pckt_;
 
   const std::string name_ = "memory_cmd_latch_event";
 };
