@@ -30,12 +30,10 @@ using Address = Address32;
 using Word = Address;
 constexpr uint64_t WordSize = sizeof(Address);
 
-/** TODO: choose size of variables more reasonably  */
 struct DramAddr {
-  uint64_t bank;
-  uint64_t row;
-  uint64_t col;
-  bool isRead; // DRAM read/write command
+  uint8_t bank;
+  uint16_t row;
+  uint16_t col;
 };
 
 enum class DramCmd : uint8_t {
