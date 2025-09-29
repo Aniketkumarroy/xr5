@@ -30,7 +30,6 @@ public:
     xr5::types::TimePS t_FAW;
     xr5::types::TimePS t_WTR;
     xr5::types::TimePS t_WR;
-    xr5::types::TimePS t_WR;
     xr5::types::TimePS t_RFC;
     xr5::types::TimePS t_REFI;
   };
@@ -43,7 +42,7 @@ public:
         capacity_(dram_params.capacity),
         io_width_of_chip_(dram_params.io_width_of_chip),
         no_of_chips_per_rank_(dram_params.no_of_chips_per_rank),
-        rank_(dram_params.rank), latency_(latency) {
+        rank_(dram_params.rank), burst_length_(dram_params.burst_length) {
     if (io_width_of_chip_ * no_of_chips_per_rank_ != xr5::types::WordSize * 8) {
       auto logger = xr5::utils::Logger::getInstance();
       logger->error("[Dram::Dram] CONFIG ERROR!! the data bus width of the "
@@ -52,9 +51,13 @@ public:
                     "to {} width of data bus, not compatible for {}-bit system",
                     io_width_of_chip_ * no_of_chips_per_rank_,
                     xr5::types::WordSize * 8);
+
+      setLatency(latency);
     }
   }
   ~Dram() = default;
+
+  void setLatency(const Latency &latency);
 
   const xr5::types::Size &getCapacity() { return capacity_; }
   uint8_t getIOWidthOfEachChip() { return io_width_of_chip_; }
@@ -73,7 +76,22 @@ private:
   const uint8_t rank_;
   const uint8_t burst_length_;
 
-  const Latency latency_;
+  xr5::types::Tick t_RCD_;
+  xr5::types::Tick t_RAS_;
+  xr5::types::Tick t_RP_;
+  xr5::types::Tick t_RC_;
+  xr5::types::Tick t_CL_;
+  xr5::types::Tick t_CWL_;
+  xr5::types::Tick t_CCD_;
+  xr5::types::Tick t_RRD_;
+  xr5::types::Tick t_FAW_;
+  xr5::types::Tick t_WTR_;
+  xr5::types::Tick t_WR_;
+  xr5::types::Tick t_RFC_;
+  xr5::types::Tick t_REFI_;
+
+  xr5::types::DramAddr active_row_;
+  xr5::types::Tick t_active_row_ = 0;
 };
 
 } // namespace memory
