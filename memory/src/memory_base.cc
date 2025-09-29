@@ -13,7 +13,10 @@ MemoryObject::MemoryObject(const MemoryObject::Params &params,
                            xr5::sim::Port::Ptr data_port,
                            xr5::sim::Port::Ptr addr_port,
                            xr5::sim::Port::Ptr cmd_port)
-    : SimObject(nullptr), clock_(params.clock), getTick_(params.getTick),
+    : SimObject(nullptr), clock_(params.clock),
+      getTickForDataReceive_(params.getTickForDataReceive),
+      getTickForAddrReceive_(params.getTickForDataReceive),
+      getTickForCmdReceive_(params.getTickForCmdReceive),
       data_receive_delay_(params.data_receive_delay),
       addr_receive_delay_(params.addr_receive_delay),
       cmd_receive_delay_(params.cmd_receive_delay) {
@@ -76,8 +79,9 @@ xr5::sim::Port *MemoryObject::getPort(std::string &name,
 }
 
 void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
-  xr5::types::Tick _latency = mem_obj_->data_receive_delay_.getRawTick() +
-                              mem_obj_->getTick_(mem_obj_->clock_);
+  xr5::types::Tick _latency =
+      mem_obj_->data_receive_delay_.getRawTick() +
+      mem_obj_->getTickForDataReceive_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
         xr5::utils::make_ptr<xr5::sim::Event, MemDataLatchEvent>(
@@ -90,8 +94,9 @@ void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
 }
 
 void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
-  xr5::types::Tick _latency = mem_obj_->addr_receive_delay_.getRawTick() +
-                              mem_obj_->getTick_(mem_obj_->clock_);
+  xr5::types::Tick _latency =
+      mem_obj_->addr_receive_delay_.getRawTick() +
+      mem_obj_->getTickForAddrReceive_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
         xr5::utils::make_ptr<xr5::sim::Event, MemAddrLatchEvent>(
@@ -106,7 +111,7 @@ void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
 
 void MemoryObject::CmdPort::receive(const xr5::sim::Packet *packet) {
   xr5::types::Tick _latency = mem_obj_->cmd_receive_delay_.getRawTick() +
-                              mem_obj_->getTick_(mem_obj_->clock_);
+                              mem_obj_->getTickForCmdReceive_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
         xr5::utils::make_ptr<xr5::sim::Event, MemCmdLatchEvent>(

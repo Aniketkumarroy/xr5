@@ -24,7 +24,12 @@ public:
     /** DISCUSS: this addhoc solution is done to also make the MemoryObject
      * class usefull for non-clocked purely combinational memories */
     xr5::sim::ClockDomain *clock = nullptr;
-    xr5::types::Tick (*getTick)(xr5::sim::ClockDomain *) = getTickForNoClock;
+    xr5::types::Tick (*getTickForDataReceive)(xr5::sim::ClockDomain *) =
+        getTickForNoClock;
+    xr5::types::Tick (*getTickForAddrReceive)(xr5::sim::ClockDomain *) =
+        getTickForNoClock;
+    xr5::types::Tick (*getTickForCmdReceive)(xr5::sim::ClockDomain *) =
+        getTickForNoClock;
 
     xr5::types::TimePS data_receive_delay = 0;
     xr5::types::TimePS addr_receive_delay = 0;
@@ -119,7 +124,9 @@ public:
 
 private:
   xr5::sim::ClockDomain *clock_ = nullptr;
-  xr5::types::Tick (*getTick_)(xr5::sim::ClockDomain *) = nullptr;
+  xr5::types::Tick (*getTickForDataReceive_)(xr5::sim::ClockDomain *) = nullptr;
+  xr5::types::Tick (*getTickForAddrReceive_)(xr5::sim::ClockDomain *) = nullptr;
+  xr5::types::Tick (*getTickForCmdReceive_)(xr5::sim::ClockDomain *) = nullptr;
 
   xr5::sim::Packet packet_to_send_;
 
