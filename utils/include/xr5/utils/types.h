@@ -30,6 +30,7 @@ using Address = Address32;
 using Word = Address;
 constexpr uint64_t WordSize = sizeof(Address);
 
+/** TODO: choose size of variables more reasonably  */
 struct DramAddr {
   uint64_t bank;
   uint64_t row;
@@ -37,7 +38,14 @@ struct DramAddr {
   bool isRead; // DRAM read/write command
 };
 
-enum class DramCmd : uint8_t { ACTIVATE, PRECHARGE };
+enum class DramCmd : uint8_t {
+  ACTIVATE,
+  READ,
+  WRITE,
+  PRECHARGE,
+  REFRESH,
+  MODE_REGISTER_SET
+};
 
 class Size {
 public:
@@ -125,6 +133,11 @@ public:
     return *this;
   }
 
+  TimeBase &operator=(Tick tick) noexcept {
+    tick_ = tick;
+    return *this;
+  }
+
   bool operator==(const Tick tick) const noexcept { return tick_ == tick; }
 
   bool operator!=(const Tick tick) const noexcept { return tick_ != tick; }
@@ -156,6 +169,11 @@ public:
 
   FreqBase &operator*=(Scalar multiplier) noexcept {
     cycles_ = static_cast<Cycle>(cycles_ * multiplier);
+    return *this;
+  }
+
+  FreqBase &operator=(Cycle cycles) noexcept {
+    cycles_ = cycles;
     return *this;
   }
 
