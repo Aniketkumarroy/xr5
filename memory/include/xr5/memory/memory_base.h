@@ -134,9 +134,9 @@ private:
   xr5::sim::Port::Ptr cmd_port_ = nullptr;
   xr5::sim::Port::Ptr data_port_ = nullptr;
 
-  xr5::types::TimePS data_receive_delay_;
-  xr5::types::TimePS addr_receive_delay_;
-  xr5::types::TimePS cmd_receive_delay_;
+  xr5::types::Tick data_receive_delay_;
+  xr5::types::Tick addr_receive_delay_;
+  xr5::types::Tick cmd_receive_delay_;
 };
 
 template <typename Data,

@@ -17,9 +17,9 @@ MemoryObject::MemoryObject(const MemoryObject::Params &params,
       getTickForDataReceive_(params.getTickForDataReceive),
       getTickForAddrReceive_(params.getTickForDataReceive),
       getTickForCmdReceive_(params.getTickForCmdReceive),
-      data_receive_delay_(params.data_receive_delay),
-      addr_receive_delay_(params.addr_receive_delay),
-      cmd_receive_delay_(params.cmd_receive_delay) {
+      data_receive_delay_(params.data_receive_delay.picosec()),
+      addr_receive_delay_(params.addr_receive_delay.picosec()),
+      cmd_receive_delay_(params.cmd_receive_delay.picosec()) {
   if (data_port == nullptr) {
     data_port_ = xr5::utils::make_ptr<xr5::sim::Port, DataPort>(
         "data_port", xr5::sim::Port::getNewId(), this);
@@ -80,7 +80,7 @@ xr5::sim::Port *MemoryObject::getPort(std::string &name,
 
 void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
   xr5::types::Tick _latency =
-      mem_obj_->data_receive_delay_.getRawTick() +
+      mem_obj_->data_receive_delay_ +
       mem_obj_->getTickForDataReceive_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
@@ -95,7 +95,7 @@ void MemoryObject::DataPort::receive(const xr5::sim::Packet *packet) {
 
 void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
   xr5::types::Tick _latency =
-      mem_obj_->addr_receive_delay_.getRawTick() +
+      mem_obj_->addr_receive_delay_ +
       mem_obj_->getTickForAddrReceive_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
@@ -110,7 +110,7 @@ void MemoryObject::AddrPort::receive(const xr5::sim::Packet *packet) {
 }
 
 void MemoryObject::CmdPort::receive(const xr5::sim::Packet *packet) {
-  xr5::types::Tick _latency = mem_obj_->cmd_receive_delay_.getRawTick() +
+  xr5::types::Tick _latency = mem_obj_->cmd_receive_delay_ +
                               mem_obj_->getTickForCmdReceive_(mem_obj_->clock_);
   if (_latency > xr5::global_clock::get_sim_step()) {
     xr5::sim::Event::Ptr e =
