@@ -15,6 +15,7 @@ public:
     uint8_t io_width_of_chip;
     uint8_t no_of_chips_per_rank;
     uint8_t rank;
+    uint8_t burst_length;
   };
 
   struct Latency {
@@ -59,6 +60,7 @@ public:
   uint8_t getIOWidthOfEachChip() { return io_width_of_chip_; }
   uint8_t getNoOfChipsPerRank() { return no_of_chips_per_rank_; }
   uint8_t getRank() { return rank_; }
+  uint8_t getBurstLength() { return burst_length_; }
 
   void handleDataPacket() override {};
   void handleAddrPacket() override {};
@@ -69,6 +71,7 @@ private:
   const uint8_t io_width_of_chip_;
   const uint8_t no_of_chips_per_rank_;
   const uint8_t rank_;
+  const uint8_t burst_length_;
 
   const Latency latency_;
 };
