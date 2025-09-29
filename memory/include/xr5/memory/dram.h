@@ -17,14 +17,32 @@ public:
     uint8_t rank;
   };
 
+  struct Latency {
+    xr5::types::TimePS t_RCD;
+    xr5::types::TimePS t_RAS;
+    xr5::types::TimePS t_RP;
+    xr5::types::TimePS t_RC;
+    xr5::types::TimePS t_CL;
+    xr5::types::TimePS t_CWL;
+    xr5::types::TimePS t_CCD;
+    xr5::types::TimePS t_RRD;
+    xr5::types::TimePS t_FAW;
+    xr5::types::TimePS t_WTR;
+    xr5::types::TimePS t_WR;
+    xr5::types::TimePS t_WR;
+    xr5::types::TimePS t_RFC;
+    xr5::types::TimePS t_REFI;
+  };
+
   Dram() = delete;
-  Dram(const Params &dram_params, const MemoryObject::Params &mem_params)
+  Dram(const Params &dram_params, const Latency &latency,
+       const MemoryObject::Params &mem_params)
       : MemoryBase<xr5::types::Address>(
             0, dram_params.capacity.bytes() / xr5::types::WordSize, mem_params),
         capacity_(dram_params.capacity),
         io_width_of_chip_(dram_params.io_width_of_chip),
         no_of_chips_per_rank_(dram_params.no_of_chips_per_rank),
-        rank_(dram_params.rank) {
+        rank_(dram_params.rank), latency_(latency) {
     if (io_width_of_chip_ * no_of_chips_per_rank_ != xr5::types::WordSize * 8) {
       auto logger = xr5::utils::Logger::getInstance();
       logger->error("[Dram::Dram] CONFIG ERROR!! the data bus width of the "
@@ -51,6 +69,8 @@ private:
   const uint8_t io_width_of_chip_;
   const uint8_t no_of_chips_per_rank_;
   const uint8_t rank_;
+
+  const Latency latency_;
 };
 
 } // namespace memory
